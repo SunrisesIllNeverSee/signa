@@ -12,6 +12,9 @@ import { cascade as computeCascade, simulate, estimateCost, classify, round } fr
 import { steeringEfficiency } from '../taste/se.mjs'
 import { loadProfile } from '../taste/profile.mjs'
 import { loadHistory, appendHistory } from '../store.mjs'
+import { preflight } from '../preflight.mjs'
+import { buildPayload, submitSignedWindow } from '../submit.mjs'
+import { ensureIdentity, loadIdentity, recordEnrollment, clearIdentity } from '../keystore.mjs'
 
 // ── diagnose ────────────────────────────────────────────────────────────────
 
@@ -422,6 +425,176 @@ export async function skillCompare(ctx, args) {
   } else {
     lines.push(`You're above ${target} avg. Nice.`)
   }
+  return lines.join('\n')
+}
+
+// ── preflight ───────────────────────────────────────────────────────────────
+
+/**
+ * preflight — run anti-gaming checks against the current cascade before submitting.
+ * Tells the operator if the server would reject or downgrade their submission.
+ */
+export async function skillPreflight(ctx, args) {
+  const { cas } = ctx
+  if (!cas || cas.yield === null) {
+    return 'No cascade data. Run `scan` first to read your logs.'
+  }
+  const identity = loadIdentity()
+  if (!identity || !identity.codename) {
+    return '═══ PREFLIGHT ═══\n\nNot enrolled. Run `signa enroll` first to get a device identity.\nYou can still run preflight with --anonymous to check the raw pillars.'
+  }
+  const windowKey = args.trim() || '30d'
+  const messages = ctx.agg?.messages || 0
+  const payload = buildPayload(windowKey, cas.pillars, messages, identity, 'claude')
+  const pre = preflight(payload)
+  const lines = ['═══ PREFLIGHT ═══', '']
+  lines.push(`Window: ${windowKey}  ·  Pillars: I ${fmt(cas.pillars.input)} O ${fmt(cas.pillars.output)} CW ${fmt(cas.pillars.cacheCreate)} CR ${fmt(cas.pillars.cacheRead)}`)
+  lines.push(`Υ: ${cas.yield.toLocaleString()}  ·  Class: ${cas.class}`)
+  lines.push('')
+  if (pre.pass) {
+    lines.push('✓ CLEAN — will pass all server gates.')
+    lines.push('  Your submission will be verified and ranked.')
+  } else {
+    if (pre.wouldReject) {
+      lines.push('✗ REJECT — the server will reject this submission:')
+      for (const i of pre.issues.filter((i) => i.severity === 'reject')) {
+        lines.push(`  ✗ ${i.code}: ${i.detail}`)
+      }
+    }
+    if (pre.wouldDowngrade) {
+      lines.push('⚠ FLAG — the server will downgrade this to flagged (not ranked):')
+      for (const i of pre.issues.filter((i) => i.severity === 'flag')) {
+        lines.push(`  ⚠ ${i.code}: ${i.detail}`)
+      }
+    }
+    lines.push('')
+    lines.push('Fix the issues above before submitting, or run `signa submit --skip-preflight` to send anyway.')
+  }
+  return lines.join('\n')
+}
+
+// ── submit ──────────────────────────────────────────────────────────────────
+
+/**
+ * submit — build, sign, preflight-check, and POST a snapshot to the board.
+ * Requires an enrolled identity (run `signa enroll` first).
+ */
+export async function skillSubmit(ctx, args) {
+  const { cas } = ctx
+  if (!cas || cas.yield === null) {
+    return 'No cascade data. Run `scan` first to read your logs.'
+  }
+  const identity = loadIdentity()
+  if (!identity || !identity.codename || !identity.operator_id) {
+    return '═══ SUBMIT ═══\n\nNot enrolled. Run `signa enroll` to bind your device first.'
+  }
+  if (!identity.private_key_pkcs8_b64) {
+    return '═══ SUBMIT ═══\n\nNo signing key. Re-run `signa enroll` to provision one.'
+  }
+
+  // Parse args: window, --dry-run, --skip-preflight, --strict
+  const dryRun = args.includes('--dry-run')
+  const skipPreflight = args.includes('--skip-preflight')
+  const strictPreflight = args.includes('--strict')
+  const windowKey = args.replace(/--\S+/g, '').trim() || '30d'
+  const messages = ctx.agg?.messages || 0
+
+  const lines = ['═══ SUBMIT ═══', '']
+  lines.push(`Window: ${windowKey}  ·  Operator: ${identity.codename}`)
+  lines.push(`Pillars: I ${fmt(cas.pillars.input)} O ${fmt(cas.pillars.output)} CW ${fmt(cas.pillars.cacheCreate)} CR ${fmt(cas.pillars.cacheRead)}`)
+  lines.push(`Υ: ${cas.yield.toLocaleString()}  ·  Class: ${cas.class}`)
+  lines.push('')
+
+  if (dryRun) {
+    lines.push('Dry run — building + signing but NOT sending.')
+  }
+
+  const result = await submitSignedWindow(windowKey, cas.pillars, messages, identity, {
+    platform: 'claude',
+    dryRun,
+    skipPreflight,
+    strictPreflight,
+  })
+
+  if (result.preflight && !result.preflight.pass) {
+    if (result.status === 'preflight_rejected') {
+      lines.push('✗ PREFLIGHT REJECTED — not sending.')
+      lines.push(`  ${result.detail}`)
+      return lines.join('\n')
+    }
+    if (result.status === 'preflight_flagged' && strictPreflight) {
+      lines.push('⚠ PREFLIGHT FLAGGED — not sending (strict mode).')
+      lines.push(`  ${result.detail}`)
+      return lines.join('\n')
+    }
+    // Non-strict flag: warn but continue
+    lines.push(`⚠ PREFLIGHT WARNING: ${result.preflight.summary}`)
+    lines.push('  Proceeding anyway (use --strict to block on flags).')
+    lines.push('')
+  }
+
+  if (dryRun) {
+    lines.push(`Would POST to: ${result.would_post}`)
+    lines.push(`Snapshot hash: ${result.payload?.agent?.snapshot_hash}`)
+    lines.push(`Signature: ${result.signature?.slice(0, 40)}...`)
+    lines.push('')
+    lines.push('Re-run without --dry-run to publish.')
+    return lines.join('\n')
+  }
+
+  // Live result
+  if (result.status === 'error') {
+    lines.push(`✗ ERROR: ${result.reason}`)
+    lines.push(`  ${result.detail || ''}`)
+    return lines.join('\n')
+  }
+
+  lines.push(`HTTP ${result.httpStatus}  ·  Status: ${result.status}`)
+  lines.push(`Verification tier: ${result.verification_tier || '—'}`)
+  lines.push(`Persisted: ${result.persisted ? 'yes' : 'no'}`)
+  lines.push(`Ranked: ${result.ranked ? '✓ YES — on the board' : '✗ no'}`)
+  if (result.reason) {
+    lines.push(`Reason: ${result.reason}`)
+    if (result.detail) lines.push(`Detail: ${result.detail}`)
+  }
+  return lines.join('\n')
+}
+
+// ── enroll ──────────────────────────────────────────────────────────────────
+
+/**
+ * enroll — provision or display the local device identity.
+ * Generates an ed25519 keypair; the public key is sent to the server at
+ * enroll time (the actual enroll POST is handled by the MCP/connect layer).
+ */
+export async function skillEnroll(ctx, args) {
+  const lines = ['═══ ENROLL ═══', '']
+  const existing = loadIdentity()
+  if (existing?.codename && existing?.operator_id) {
+    lines.push(`Already enrolled:`)
+    lines.push(`  Codename:     ${existing.codename}`)
+    lines.push(`  Operator ID:  ${existing.operator_id}`)
+    lines.push(`  Device ID:    ${existing.device_id}`)
+    lines.push(`  Public key:   ${existing.public_key?.slice(0, 30)}...`)
+    lines.push(`  Enrolled at:  ${existing.enrolled_at?.slice(0, 10) || '—'}`)
+    lines.push('')
+    lines.push('To re-enroll (new device), run `signa enroll --reset`.')
+    return lines.join('\n')
+  }
+  if (args.includes('--reset')) {
+    clearIdentity()
+    lines.push('Cleared previous identity.')
+  }
+  const id = ensureIdentity()
+  lines.push('Device identity provisioned:')
+  lines.push(`  Device ID:    ${id.device_id}`)
+  lines.push(`  Public key:   ${id.public_key?.slice(0, 30)}...`)
+  lines.push(`  Agent version: ${id.agent_version}`)
+  lines.push('')
+  lines.push('NOT YET BOUND — no codename or operator_id.')
+  lines.push('To complete enrollment, run the MCP enroll command:')
+  lines.push('  npx sigrank enroll')
+  lines.push('This sends your public key to the server and binds a codename.')
   return lines.join('\n')
 }
 

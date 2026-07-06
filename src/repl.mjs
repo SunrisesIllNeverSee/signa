@@ -11,6 +11,7 @@ import readline from 'node:readline'
 import {
   skillDiagnose, skillSimulate, skillSuggest, skillTrack,
   skillTaste, skillGoal, skillCost, skillAnomaly, skillSelfImprove, skillCompare,
+  skillPreflight, skillSubmit, skillEnroll,
 } from './skills/index.mjs'
 import { llmRespond, hasLLM } from './llm/stub.mjs'
 
@@ -30,6 +31,9 @@ Commands:
   self-improve      Full cycle: diagnose → suggest → next actions
   compare <class>   "How do I compare to TRANSMITTER avg?" — head-to-head
   watch             Start the background daemon (auto-scan on log changes)
+  preflight         "Will my submission pass?" — anti-gaming pre-check
+  submit [window]   Build + sign + POST to the board (--dry-run to preview)
+  enroll            Provision or display your device identity
   help              Show this message
   quit              Exit
 
@@ -60,6 +64,9 @@ function matchSkill(input) {
   if (lower === 'self-improve' || lower === 'coach' || lower === 'next' || lower === 'self improve') return { skill: 'self-improve' }
   if (lower.startsWith('compare') || lower.startsWith('vs') || lower.startsWith('versus')) return { skill: 'compare', args: lower.replace(/^(compare|vs|versus)\s*/, '') }
   if (lower === 'watch' || lower === 'daemon' || lower === 'monitor') return { skill: 'watch' }
+  if (lower === 'preflight' || lower === 'validate' || lower === 'will it pass') return { skill: 'preflight', args: '' }
+  if (lower.startsWith('submit') || lower.startsWith('publish')) return { skill: 'submit', args: lower.replace(/^(submit|publish)\s*/, '') }
+  if (lower === 'enroll' || lower.startsWith('enroll ')) return { skill: 'enroll', args: lower.replace(/^enroll\s*/, '') }
   if (lower === 'help' || lower === '?' || lower === 'commands') return { skill: 'help' }
   if (lower === 'quit' || lower === 'exit' || lower === 'q') return { skill: 'quit' }
   // Natural language heuristics
@@ -147,6 +154,15 @@ export async function startRepl(ctx, scanFn) {
             console.log('[watch] done. Updated context loaded.\n')
           })
           console.log('')
+          break
+        case 'preflight':
+          console.log('\n' + await skillPreflight(ctx, match.args) + '\n')
+          break
+        case 'submit':
+          console.log('\n' + await skillSubmit(ctx, match.args) + '\n')
+          break
+        case 'enroll':
+          console.log('\n' + await skillEnroll(ctx, match.args) + '\n')
           break
         case 'help':
           console.log(HELP)
