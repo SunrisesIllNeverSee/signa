@@ -9,6 +9,7 @@
 
 import { snapshotHash, signPayload } from './sign.mjs'
 import { preflight } from './preflight.mjs'
+import { buildAttestation } from './attest.mjs'
 
 const WINDOW_TYPE = { '7d': '7d', '30d': '30d', '90d': '90d', all: 'all_time' }
 const WINDOW_SPAN_DAYS = { '7d': 7, '30d': 30, '90d': 90, all_time: 3650 }
@@ -27,8 +28,9 @@ export function toPlatformPrimary(platform) {
 }
 
 /**
- * buildPayload — Schema 1.0 payload from aggregated pillars + enrolled identity.
+ * buildPayload — Schema 1.0/1.1 payload from aggregated pillars + enrolled identity.
  * Pure (given opts.now); agent.snapshot_hash is computed last.
+ * If opts.attestationFiles is provided, includes a v1.1 source_attestation block.
  */
 export function buildPayload(windowKey, pillars, messages, identity, platform, opts = {}) {
   const windowType = WINDOW_TYPE[windowKey] || windowKey
@@ -92,6 +94,18 @@ export function buildPayload(windowKey, pillars, messages, identity, platform, o
       public_key: identity.public_key,
     },
   }
+
+  // v1.1: source attestation — the anti-gaming signal only the on-device
+  // agent can produce. Hashes the log files so the server can detect
+  // tampering across submissions (content_hash changed but timestamps didn't).
+  if (opts.attestationFiles && opts.attestationFiles.length > 0) {
+    const attestation = buildAttestation(opts.attestationFiles)
+    if (attestation.length > 0) {
+      payload.schema_version = '1.1'
+      payload.source_attestation = attestation
+    }
+  }
+
   payload.agent.snapshot_hash = snapshotHash(payload)
   return payload
 }

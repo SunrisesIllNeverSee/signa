@@ -1,9 +1,18 @@
 /**
- * preflight.mjs — local anti-gaming pre-checks for signa.
+ * preflight.mjs — local plausibility pre-checks for signa.
  *
- * Ports the server's plausibility gate + battery (Benford + contamination)
- * so signa can warn the operator BEFORE submitting. Same logic as the MCP's
- * preflight.mjs — kept in sync with lib/ingest/gates.ts + lib/ingest/battery.ts.
+ * Mirrors ONLY the server's public plausibility gate (gates.ts:86-137) —
+ * totals consistency, turns/sessions ratios, output rate, cache ratio,
+ * cadence. These are integrity guards labeled "NOT the proprietary RS.xx"
+ * and are safe to replicate in an open agent.
+ *
+ * The proprietary battery (Benford / cadence / contamination) is SERVER-ONLY
+ * and must NOT be shipped in the agent. The server always runs its own
+ * battery after the POST — this preflight is a client-side preview of the
+ * public plausibility checks only.
+ *
+ * Source of truth: lib/ingest/gates.ts (plausibilityGate). This port must
+ * stay in sync with the plausibility gate ONLY.
  */
 
 // ── plausibility checks (from gates.ts:86-137) ──────────────────────────────
@@ -58,47 +67,20 @@ export function plausibilityCheck(rt, window) {
   return out
 }
 
-// ── battery checks (from battery.ts:37-107) ─────────────────────────────────
+// ── full preflight (plausibility only — NO battery) ─────────────────────────
 
-export function benfordCheck(rt) {
-  const vals = [
-    rt.tokens_input_fresh,
-    rt.tokens_output,
-    rt.tokens_cache_read,
-    rt.tokens_cache_creation,
-  ].filter((v) => v > 0)
-  if (vals.length < 3) return null
-  const lead = vals.map((v) => parseInt(String(v)[0], 10))
-  const lowFrac = lead.filter((d) => d <= 3).length / lead.length
-  if (lowFrac < 0.25) {
-    return { code: 'benford_violation', detail: `leading-digit distribution ${Math.round(lowFrac * 100)}% in 1-3 (expected ~60% per Benford's law)` }
-  }
-  return null
-}
-
-export function contaminationCheck(rt) {
-  if (rt.tokens_cache_read > 1_000 && rt.tokens_cache_creation === 0) {
-    return { code: 'contamination_signature', detail: `${rt.tokens_cache_read} cache_read with 0 cache_creation (impossible cascade)` }
-  }
-  if (rt.tokens_cache_creation > 0 && rt.tokens_cache_read / rt.tokens_cache_creation > 100) {
-    return { code: 'extreme_cache_ratio', detail: `cache_read/cache_creation = ${(rt.tokens_cache_read / rt.tokens_cache_creation).toFixed(1)}:1 (real max ~30:1)` }
-  }
-  return null
-}
-
-// ── full preflight ──────────────────────────────────────────────────────────
-
+/**
+ * Run preflight plausibility checks against a payload. Returns:
+ *   { pass: true, issues: [] }                    — clean submission
+ *   { pass: false, issues: [...], wouldDowngrade } — would be flagged/rejected
+ *
+ * NOTE: this only mirrors the PUBLIC plausibility gate. The server runs
+ * additional proprietary checks (the battery) that this preflight does NOT
+ * replicate. A "pass" here means "passes the plausibility gate," not
+ * "guaranteed to pass all server gates."
+ */
 export function preflight(payload) {
-  const issues = []
-
-  const plaus = plausibilityCheck(payload.raw_telemetry, payload.window)
-  issues.push(...plaus)
-
-  const benford = benfordCheck(payload.raw_telemetry)
-  if (benford) issues.push({ severity: 'flag', code: benford.code, detail: benford.detail })
-
-  const contamination = contaminationCheck(payload.raw_telemetry)
-  if (contamination) issues.push({ severity: 'flag', code: contamination.code, detail: contamination.detail })
+  const issues = plausibilityCheck(payload.raw_telemetry, payload.window)
 
   const hasReject = issues.some((i) => i.severity === 'reject')
   const hasFlag = issues.some((i) => i.severity === 'flag')
@@ -112,6 +94,6 @@ export function preflight(payload) {
       ? `REJECT: ${issues.filter((i) => i.severity === 'reject').map((i) => i.code).join(', ')}`
       : hasFlag
         ? `FLAG (verified → flagged, not ranked): ${issues.filter((i) => i.severity === 'flag').map((i) => i.code).join(', ')}`
-        : 'clean — will pass all server gates',
+        : 'clean — passes plausibility gate (server runs additional proprietary checks)',
   }
 }
