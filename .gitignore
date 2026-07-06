@@ -1,0 +1,5 @@
+node_modules/
+.signa/
+*.log
+.DS_Store
+dist/
