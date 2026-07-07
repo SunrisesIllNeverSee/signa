@@ -266,7 +266,9 @@ export async function parseSession(path) {
           turn.accepted = false
         }
       }
-      // Determine outcome: corrected? (user edits same file assistant edited, within next 2 turns)
+      // Determine outcome: corrected? (user edits same file assistant edited, within next 5 messages)
+      // Expanded window from k+4 to k+6 to catch slow corrections
+      // Also distinguish additive vs corrective edits via delta
       if (!turn.rejected && turn.userResponse) {
         const assistantEditFiles = new Set(
           msg.toolUses
@@ -274,13 +276,17 @@ export async function parseSession(path) {
             .map(tu => tu.input.file_path)
         )
         if (assistantEditFiles.size > 0) {
-          for (let m = k + 1; m < Math.min(k + 4, session.messages.length); m++) {
+          turn.correctionDeltas = []
+          for (let m = k + 1; m < Math.min(k + 6, session.messages.length); m++) {
             const next = session.messages[m]
             if (next.role === 'user' || next.role === 'assistant') {
               for (const tu of next.toolUses) {
                 if ((tu.name === 'Edit' || tu.name === 'MultiEdit') && assistantEditFiles.has(tu.input?.file_path)) {
                   turn.corrected = true
                   turn.accepted = false
+                  // Capture the correction delta for ASI precision analysis
+                  const delta = (tu.input?.new_string || '').length - (tu.input?.old_string || '').length
+                  turn.correctionDeltas.push(delta)
                   break
                 }
               }
@@ -338,10 +344,12 @@ export function aggregateSessions(sessions) {
     correctionLoops: [],
     feedbackDirectives: [],
     commandFirstWords: {},
-    turns: [], // all turns across sessions (for SE)
+    turns: [], // all turns across sessions (for SE/ASI)
+    sessions: [], // session refs for per-session ASI
     timeBounds: { start: null, end: null },
   }
   for (const s of sessions) {
+    agg.sessions.push(s)
     agg.tokens.input += s.tokens.input
     agg.tokens.output += s.tokens.output
     agg.tokens.cacheCreate += s.tokens.cacheCreate
