@@ -18,9 +18,34 @@ timestamp: 2026-07-07T08:30:00Z
 
 ---
 
+## Part 0: The corrected framing (post-StraVIBE check)
+
+**The "crowded space" was a false alarm.** The 30+ tools in the landscape
+operate on different data layers than SigRank:
+
+- **Tier 1 (StraVIBE, straude):** raw token counts. "You burned 48.2M tokens."
+  A calorie counter. Ranks on volume. Same privacy model as us ("only token
+  counts leave") but opposite game — they sum the counts, we compute the
+  relationships between them.
+- **Tier 2 (Code Insights, taste-ai, MS AI Engineer Coach, 25+ others):**
+  behavioral/style analysis. "Your tool distribution is Bash-heavy." A nutrition
+  diary. They analyze patterns but don't have the cascade.
+- **Tier 3 (SigRank — us):** cascade architecture. "Your leverage is 259×,
+  your velocity is 1.09, you're POWER class." A metabolic panel. Nobody else
+  computes Υ/SNR/Leverage/Velocity/Class.
+
+**signa is not competing with coaching tools. It's the interface to data that
+only SigRank has.** The cascade is the moat. signa is the agent that reads the
+moat and talks back about it.
+
+Full landscape scan with 30+ tools inventoried: see
+RESEARCH_REPORT_LANDSCAPE_SCAN.md.
+
+---
+
 ## Part 1: The landscape — what actually exists
 
-### The crowded fields
+### The crowded fields (Tier 2 — not our competition)
 
 **Session analysis tools (10+):**
 - Code Insights — CLI, parses Claude Code/Cursor/Codex/Copilot sessions into SQLite, AI-powered insights, weekly synthesis
