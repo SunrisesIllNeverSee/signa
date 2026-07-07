@@ -16,10 +16,11 @@ const SIGNA_HOME = process.env.SIGNA_HOME || join(homedir(), '.signa')
 const PROFILE_PATH = join(SIGNA_HOME, 'taste-profile.json')
 
 /** Build a taste profile from aggregated session data. */
-export function buildProfile(agg, operator = 'local') {
-  const taste = extractTaste(agg, operator)
+export function buildProfile(agg, operator = 'local', opts = {}) {
+  const { deepTaste = false, cascade = null } = opts
+  const taste = extractTaste(agg, operator, { deepTaste, cascade })
   return {
-    version: '1.0',
+    version: '2.0',
     operator,
     generatedAt: new Date().toISOString(),
     sessionsAnalyzed: taste.raw.sessionsAnalyzed,
@@ -27,8 +28,18 @@ export function buildProfile(agg, operator = 'local') {
     totalEdits: taste.raw.totalEdits,
     totalRejections: taste.raw.totalRejections,
     correctionLoops: taste.raw.correctionLoops,
+    // v2 behavioral signature
+    steeringSignature: taste.steeringSignature,
+    iterationFingerprint: taste.iterationFingerprint,
+    iterationConcentration: taste.iterationConcentration,
+    workflowRhythm: taste.workflowRhythm,
+    cascadePersonality: taste.cascadePersonality,
+    correctionTaxonomy: taste.correctionTaxonomy,
+    deepTaste: taste.deepTaste,
+    // v1 backward compat
     acceptanceRate: taste.metrics.acceptanceRate,
     steeringEfficiency: taste.metrics.steeringEfficiency,
+    asi: taste.metrics.asi,
     preferences: taste.preferences,
     correctionPatterns: taste.correctionPatterns,
     metrics: taste.metrics,
@@ -54,8 +65,8 @@ export async function loadProfile() {
 }
 
 /** Generate the taste profile from sessions and save it. */
-export async function generateAndSave(agg, operator = 'local') {
-  const profile = buildProfile(agg, operator)
+export async function generateAndSave(agg, operator = 'local', opts = {}) {
+  const profile = buildProfile(agg, operator, opts)
   await saveProfile(profile)
   return profile
 }
