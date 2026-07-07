@@ -85,6 +85,13 @@ async function main() {
   const arg = process.argv[2] || ''
   const rest = process.argv.slice(3).join(' ')
 
+  // MCP server mode — expose skills as MCP tools for the operator's own agent
+  if (arg === '--mcp' || arg === 'mcp') {
+    const { startServer } = await import('./mcp-server.mjs')
+    await startServer()
+    return
+  }
+
   switch (arg) {
     case '':
     case 'repl':
@@ -197,6 +204,15 @@ Usage:
   signa self-improve       Full cycle: diagnose → suggest → actions
   signa compare <class>    Head-to-head vs class average
   signa watch              Start background daemon
+  signa --mcp              Start MCP server (expose skills to your AI agent)
+
+MCP server mode:
+  signa --mcp starts a stdio MCP server that exposes signa's skills as
+  MCP tools. Your AI agent (Claude Code, Cursor, Windsurf) can call them
+  through MCP. You bring your own LLM; signa provides the skills.
+
+  In .mcp.json:
+    { "mcpServers": { "signa": { "command": "signa", "args": ["--mcp"] } } }
 
 Everything stays local. Nothing leaves your machine.
 `)

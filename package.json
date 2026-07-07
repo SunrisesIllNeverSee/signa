@@ -15,10 +15,21 @@
     "start": "node src/index.mjs",
     "test": "node --test test/"
   },
-  "keywords": ["sigrank", "signa", "agent", "cascade", "taste", "steering-efficiency", "token-efficiency"],
+  "keywords": [
+    "sigrank",
+    "signa",
+    "agent",
+    "cascade",
+    "taste",
+    "steering-efficiency",
+    "token-efficiency"
+  ],
   "homepage": "https://signalaf.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/SunrisesIllNeverSee/signa.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
   }
 }
