@@ -25,6 +25,7 @@ import { startRepl } from './repl.mjs'
 import {
   skillDiagnose, skillSimulate, skillSuggest, skillTrack,
   skillTaste, skillGoal, skillCost, skillAnomaly, skillSelfImprove, skillCompare,
+  skillASI, skillBridge,
 } from './skills/index.mjs'
 
 const DEFAULT_ROOT = join(homedir(), '.claude', 'projects')
@@ -34,14 +35,15 @@ async function scan(opts = {}) {
   const settings = await loadSettings()
   const root = opts.root || settings.root || DEFAULT_ROOT
   const sinceDays = opts.sinceDays || 30
+  const log = opts.silent ? () => {} : (msg) => console.log(msg)
 
-  console.log(`Reading logs from ${root} (last ${sinceDays}d)...`)
+  log(`Reading logs from ${root} (last ${sinceDays}d)...`)
   const sessions = await readAllSessions(root, { sinceDays, maxFiles: 500 })
   if (sessions.length === 0) {
-    console.log('No sessions found.')
+    log('No sessions found.')
     return null
   }
-  console.log(`  ${sessions.length} sessions found.`)
+  log(`  ${sessions.length} sessions found.`)
 
   const agg = aggregateSessions(sessions)
   const cas = computeCascade(agg.tokens)
@@ -58,8 +60,8 @@ async function scan(opts = {}) {
     sessionCount: agg.sessionCount,
   })
 
-  console.log(`  Υ ${cas.yield?.toLocaleString()}  ·  ${cas.class}  ·  SE ${se.se}`)
-  console.log(`  Taste profile saved.`)
+  log(`  Υ ${cas.yield?.toLocaleString()}  ·  ${cas.class}  ·  SE ${se.se}`)
+  log(`  Taste profile saved.`)
 
   return { agg, cas, se, profile, settings, raw: { sessions, agg } }
 }
@@ -145,6 +147,20 @@ async function main() {
       console.log(await skillTaste(ctx))
       break
     }
+    case 'asi': {
+      // ASI needs agg.turns which isn't in history — scan fresh
+      const ctx = await scan({ silent: true })
+      if (!ctx) { console.log('No sessions found.'); break }
+      console.log(await skillASI(ctx))
+      break
+    }
+    case 'bridge': {
+      // Bridge needs agg + taste which aren't fully in history — scan fresh
+      const ctx = await scan({ silent: true })
+      if (!ctx) { console.log('No sessions found.'); break }
+      console.log(await skillBridge(ctx))
+      break
+    }
     case 'goal': {
       const ctx = await ctxFromHistory()
       console.log(await skillGoal(ctx, rest))
@@ -198,6 +214,8 @@ Usage:
   signa suggest            Ranked recommendations
   signa track              Metrics over time
   signa taste              Show taste profile
+  signa asi                Show Appropriate Steering Index (8 dimensions)
+  signa bridge             Taste → cascade coaching insights
   signa goal <class>       Path to target class (e.g. "transmitter")
   signa cost               Token-to-cost analysis
   signa anomaly            Detect metric drops

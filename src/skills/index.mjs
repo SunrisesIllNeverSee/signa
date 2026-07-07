@@ -9,12 +9,14 @@
  */
 
 import { cascade as computeCascade, simulate, estimateCost, classify, round } from '../cascade.mjs'
-import { steeringEfficiency } from '../taste/se.mjs'
+import { steeringEfficiency, appropriateSteeringIndex } from '../taste/se.mjs'
 import { loadProfile } from '../taste/profile.mjs'
 import { loadHistory, appendHistory } from '../store.mjs'
 import { preflight } from '../preflight.mjs'
 import { buildPayload, submitSignedWindow } from '../submit.mjs'
 import { ensureIdentity, loadIdentity, recordEnrollment, clearIdentity } from '../keystore.mjs'
+import { tasteCascadeBridge, formatBridgeReport } from '../taste/bridge.mjs'
+import { extractTaste } from '../taste/extractor.mjs'
 
 // ── diagnose ────────────────────────────────────────────────────────────────
 
@@ -596,6 +598,73 @@ export async function skillEnroll(ctx, args) {
   lines.push('  npx sigrank enroll')
   lines.push('This sends your public key to the server and binds a codename.')
   return lines.join('\n')
+}
+
+// ── asi ─────────────────────────────────────────────────────────────────────
+
+/**
+ * asi — Appropriate Steering Index (8 dimensions).
+ * Shows whether your interventions were the RIGHT ones, not just how often
+ * you accepted. Based on Anthropic's autonomy research.
+ */
+export async function skillASI(ctx) {
+  const { agg } = ctx
+  if (!agg || !agg.turns || agg.turns.length === 0) {
+    return 'No steering data yet. Run `scan` first to read your logs.'
+  }
+  const asi = appropriateSteeringIndex(agg)
+  const lines = ['═══ APPROPRIATE STEERING INDEX ═══', '']
+  lines.push(`Composite ASI: ${asi.asi}  ·  SE (legacy): ${asi.seLegacy}`)
+  lines.push(`Confidence: ${asi.confidence || '—'}`)
+  lines.push('')
+  lines.push('Dimensions:')
+  const labels = {
+    acceptanceRate: 'Acceptance rate',
+    correctionRate: 'Correction rate',
+    rejectionRate: 'Rejection rate',
+    correctionPrecision: 'Correction precision',
+    interventionTiming: 'Intervention timing',
+    relianceSlope: 'Reliance slope',
+    overCorrectionIndex: 'Over-correction index',
+    underSteeringIndex: 'Under-steering index',
+  }
+  for (const [key, dim] of Object.entries(asi.dimensions)) {
+    const val = typeof dim.value === 'number' ? dim.value.toFixed(3) : (dim.value ?? '—')
+    const dimLabel = labels[key] || key
+    // Some dimensions have a descriptive label for the value (e.g. interventionTiming)
+    const valLabel = dim.label ? ` (${dim.label})` : ''
+    lines.push(`  ${dimLabel}: ${val}${valLabel}  [${dim.confidence || '—'}]`)
+    if (dim.trend) lines.push(`    trend: ${dim.trend}`)
+  }
+  lines.push('')
+  lines.push('SE v1 measured acceptance rate. ASI measures appropriate intervention.')
+  lines.push(`An SE of ${(asi.seLegacy || 0).toFixed(2)} corresponds to ASI ${(asi.asi || 0).toFixed(3)}.`)
+  return lines.join('\n')
+}
+
+// ── bridge ──────────────────────────────────────────────────────────────────
+
+/**
+ * bridge — taste → cascade coaching insights.
+ * Connects your behavioral taste profile to your cascade performance.
+ * This is the coaching no other tool can give — it requires both the
+ * taste profile AND the cascade formula.
+ */
+export async function skillBridge(ctx) {
+  const { taste, cas, agg, settings } = ctx
+  if (!cas || cas.yield === null) {
+    return 'No cascade data yet. Run `scan` first to read your logs.'
+  }
+  // Use existing taste or re-extract
+  let tasteProfile = taste
+  if (!tasteProfile && agg) {
+    tasteProfile = extractTaste(agg, settings?.codename || 'local', { cascade: cas })
+  }
+  if (!tasteProfile) {
+    return 'No taste profile available. Run `scan` first.'
+  }
+  const insights = tasteCascadeBridge(tasteProfile, cas)
+  return formatBridgeReport(insights)
 }
 
 // ── helpers ─────────────────────────────────────────────────────────────────

@@ -11,7 +11,7 @@ import readline from 'node:readline'
 import {
   skillDiagnose, skillSimulate, skillSuggest, skillTrack,
   skillTaste, skillGoal, skillCost, skillAnomaly, skillSelfImprove, skillCompare,
-  skillPreflight, skillSubmit, skillEnroll,
+  skillPreflight, skillSubmit, skillEnroll, skillASI, skillBridge,
 } from './skills/index.mjs'
 import { llmRespond, hasLLM } from './llm/stub.mjs'
 
@@ -25,6 +25,8 @@ Commands:
   suggest           "What should I do?" — ranked recommendations
   track             "Am I improving?" — metrics over time
   taste             "What's my taste profile?" — show preferences + patterns
+  asi               "How well do I steer?" — Appropriate Steering Index (8 dimensions)
+  bridge            "Connect my behavior to my cascade" — coaching insights
   goal <class>      "How do I hit TRANSMITTER?" — path to a target class
   cost              "How much did I spend?" — token-to-cost analysis
   anomaly           "Did anything drop?" — detect metric drops
@@ -58,6 +60,8 @@ function matchSkill(input) {
   if (lower === 'suggest' || lower === 'recommend' || lower === 'improve' || lower === 'what should i do') return { skill: 'suggest' }
   if (lower === 'track' || lower === 'history' || lower === 'trend' || lower === 'am i improving') return { skill: 'track' }
   if (lower === 'taste' || lower === 'profile' || lower === 'preferences' || lower === "what's my taste") return { skill: 'taste' }
+  if (lower === 'asi' || lower === 'steering' || lower === 'how well do i steer' || lower === 'appropriate steering') return { skill: 'asi' }
+  if (lower === 'bridge' || lower === 'connect' || lower === 'coaching' || lower === 'connect my behavior') return { skill: 'bridge' }
   if (lower.startsWith('goal') || lower.startsWith('target') || lower.startsWith('how do i hit')) return { skill: 'goal', args: lower.replace(/^(goal|target|how do i hit)\s*/, '') }
   if (lower === 'cost' || lower === 'spend' || lower === 'dollars' || lower === 'how much did i spend') return { skill: 'cost' }
   if (lower === 'anomaly' || lower === 'drop' || lower === 'weird' || lower === 'did anything drop') return { skill: 'anomaly' }
@@ -126,6 +130,12 @@ export async function startRepl(ctx, scanFn) {
           break
         case 'taste':
           console.log('\n' + await skillTaste(ctx) + '\n')
+          break
+        case 'asi':
+          console.log('\n' + await skillASI(ctx) + '\n')
+          break
+        case 'bridge':
+          console.log('\n' + await skillBridge(ctx) + '\n')
           break
         case 'goal':
           console.log('\n' + await skillGoal(ctx, match.args) + '\n')

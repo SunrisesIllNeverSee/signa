@@ -1,6 +1,6 @@
 # signa
 
-**Interactive token-cascade agent.** Reads your AI coding session logs locally, computes the yield cascade (Υ, SNR, Leverage, Velocity), builds a taste profile from your correction patterns, and coaches you on token efficiency.
+**Interactive token-cascade agent.** Reads your AI coding session logs locally, computes the yield cascade (Υ, SNR, Leverage, Velocity), builds a behavioral taste profile, measures your Appropriate Steering Index (ASI), and coaches you on token efficiency.
 
 Everything stays local. Nothing leaves your machine.
 
@@ -8,18 +8,32 @@ Everything stays local. Nothing leaves your machine.
 
 ---
 
+## The SigRank ecosystem
+
+signa is one of three pieces:
+
+| Repo | What it is | Install |
+|------|-----------|---------|
+| **[sigrank-mcp](https://github.com/SunrisesIllNeverSee/sigrank-mcp)** | The instrument — extracts 4 token pillars, computes the cascade, submits to the leaderboard. MCP server + TUI dashboard. | `npx sigrank` |
+| **[sigrank-app](https://github.com/SunrisesIllNeverSee/sigrank-app)** | The leaderboard — signalaf.com. Privacy-preserving operator profiles, class tiers, board rankings. | [signalaf.com](https://signalaf.com) |
+| **[signa](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `git clone` + `npm link` |
+
+**sigrank-mcp** is the calorie counter. **signa** is the metabolic panel.
+
+---
+
 ## What this is
 
-`signa` is the interactive agent from the [SigRank brainstorm](https://signalaf.com). It reads the same session logs that `sigrank-mcp`'s `tokenpull` reads — but instead of just extracting four token pillars, it reads **all three signal layers**:
+`signa` reads the same session logs that `sigrank-mcp`'s `tokenpull` reads — but instead of just extracting four token pillars, it reads **all three signal layers**:
 
 - **Layer 1 (metadata):** tool distribution, file edit counts, edit sizes, reject/error rates
 - **Layer 2 (structural):** correction loops, convergence patterns, session shape
-- **Layer 3 (content):** user feedback directives ("get rid of median", "make numbers larger") — distilled into preferences, not retained
+- **Layer 3 (content):** user feedback directives — distilled into preferences, not retained (opt-in)
 
 From these layers it computes:
-- The **cascade** (Υ, SNR, Leverage, Velocity, 10xDEV) — the efficiency metrics
-- **Steering Efficiency (SE)** — how well you steer your agent (accepted vs corrected vs rejected turns)
-- A **taste profile** — your design preferences, code style, workflow habits
+- The **cascade** (Υ, SNR, Leverage, Velocity, class) — the efficiency metrics
+- **Appropriate Steering Index (ASI)** — 8 dimensions measuring whether your interventions were the RIGHT ones, not just how often you accepted
+- A **behavioral taste profile** — 5 dimensions: steering signature, iteration fingerprint, workflow rhythm, cascade personality, correction taxonomy
 
 Then it coaches you: diagnose weak pillars, simulate changes, suggest improvements, track trends, set goals, analyze costs, detect anomalies, and run the full self-improvement cycle.
 
@@ -28,16 +42,14 @@ Then it coaches you: diagnose weak pillars, simulate changes, suggest improvemen
 ## Install
 
 ```bash
-# Clone + run (no npm install needed — zero dependencies, pure Node.js)
 git clone https://github.com/SunrisesIllNeverSee/signa.git
 cd signa
-
-# Or link globally
-npm link
+npm install        # installs @modelcontextprotocol/sdk for MCP server mode
+npm link           # optional: makes `signa` available globally
 signa --help
 ```
 
-Requires Node.js ≥ 18. Zero npm dependencies — pure Node.js stdlib.
+Requires Node.js ≥ 18.
 
 ---
 
@@ -53,11 +65,16 @@ signa diagnose             # "How am I doing?"
 signa simulate input -50%  # "What if I cut my input in half?"
 signa suggest              # "What should I do differently?"
 signa taste                # "What's my taste profile?"
+signa asi                  # "How well do I steer?"
+signa bridge               # "Connect my behavior to my cascade"
 signa goal transmitter     # "How do I hit TRANSMITTER?"
 signa cost                 # "How much did I spend?"
 signa compare transmitter  # "How do I compare to TRANSMITTER avg?"
 signa self-improve         # Full cycle: diagnose → suggest → actions
 signa watch                # Background daemon (auto-scan on log changes)
+
+# 3. Or expose signa as MCP tools for your AI agent
+signa --mcp                # starts stdio MCP server (12 tools)
 ```
 
 ---
@@ -88,16 +105,57 @@ Delta:   ↑ 849.49 (300.0%)
 Class change: POWER → ARCHITECT+
 ...
 
-signa> how do I hit transmitter?
-═══ GOAL ═══
-Target: TRANSMITTER (Υ ≥ 5,000)
-Gap: 4,716.83
-Paths to close the gap:
-  2. Cut fresh input to 5.09M (-76.2%) → Υ 4,999.93
-...
-
 signa> quit
 ```
+
+### LLM mode (optional)
+
+The REPL works without an LLM — it pattern-matches input to skills directly. For conversational responses, enable the Claude API adapter:
+
+```bash
+# Set your API key
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Or in ~/.signa/settings.json:
+{ "llm": "claude" }
+```
+
+When enabled, signa sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing — zero API calls, zero data leaves.
+
+---
+
+## MCP server mode
+
+`signa --mcp` starts a stdio MCP server that exposes 12 tools. Your AI agent (Claude Code, Cursor, Windsurf) can call them through MCP. You bring your own LLM; signa provides the skills.
+
+```json
+// In .mcp.json:
+{
+  "mcpServers": {
+    "signa": {
+      "command": "signa",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+| MCP tool | What it does |
+|----------|-------------|
+| `signa_scan` | Read logs, compute cascade + ASI + taste |
+| `signa_diagnose` | Pillar-level audit + issue detection |
+| `signa_simulate` | Project Υ/class delta from a pillar change |
+| `signa_suggest` | Ranked recommendations with impact |
+| `signa_taste` | 5-dimension behavioral taste profile |
+| `signa_asi` | 8-dimension Appropriate Steering Index |
+| `signa_bridge` | Taste → cascade coaching insights |
+| `signa_cost` | Token-to-cost analysis + cache savings |
+| `signa_goal` | Path to a target class |
+| `signa_compare` | Head-to-head vs class benchmark |
+| `signa_track` | Metrics over time from history |
+| `signa_anomaly` | Detect metric drops |
+
+Context is cached for 60 seconds to avoid re-reading logs on every tool call. All data stays local.
 
 ---
 
@@ -105,12 +163,14 @@ signa> quit
 
 | Skill | Trigger | What it does |
 |-------|---------|-------------|
-| `scan` | "scan", "refresh" | Read logs, compute cascade + SE + taste profile, save to history |
+| `scan` | "scan", "refresh" | Read logs, compute cascade + ASI + taste profile, save to history |
 | `diagnose` | "how am I doing", "audit" | Pillar-level audit: which pillar is weak, why |
 | `simulate` | "simulate", "what if" | Project Υ/class delta from a hypothetical pillar change |
 | `suggest` | "suggest", "what should I do" | Ranked recommendations with simulated impact |
 | `track` | "track", "am I improving" | Metrics over time from local history |
-| `taste` | "taste", "profile" | Show your taste profile (preferences, correction patterns) |
+| `taste` | "taste", "profile" | Show your behavioral taste profile (5 dimensions) |
+| `asi` | "asi", "steering" | Show your Appropriate Steering Index (8 dimensions) |
+| `bridge` | "bridge", "connect" | Taste → cascade coaching insights |
 | `goal` | "goal", "how do I hit" | Path to a target class (TRANSMITTER, ARCHITECT, etc.) |
 | `cost` | "cost", "how much" | Token-to-cost analysis (Claude pricing) |
 | `anomaly` | "anomaly", "did anything drop" | Detect metric drops, pinpoint when |
@@ -120,33 +180,51 @@ signa> quit
 
 ---
 
-## Steering Efficiency (SE)
+## Appropriate Steering Index (ASI)
 
-SE measures how well you steer your agent. Every turn is classified:
+ASI measures whether your interventions were the RIGHT ones, not just how often you accepted. Based on Anthropic's autonomy research.
 
-- **Accepted (1.0):** The agent's output was used as-is
-- **Corrected (0.5):** You re-edited the same file the agent edited (within 2 turns)
-- **Rejected (0.0):** A tool use was explicitly rejected
+**8 dimensions:**
 
-```
-SE = (1.0 × accepted + 0.5 × corrected + 0.0 × rejected) / total turns
-```
+1. **Acceptance rate** — fraction of turns used as-is
+2. **Correction rate** — fraction of turns you re-edited
+3. **Rejection rate** — fraction of turns explicitly rejected
+4. **Correction precision** — how targeted your corrections were (single-file vs scattered)
+5. **Intervention timing** — how long you let the agent work before intervening
+6. **Reliance slope** — trend of your acceptance rate over the session (stable/improving/declining)
+7. **Over-correction index** — fraction of corrections that were potentially unnecessary
+8. **Under-steering index** — fraction of turns where you should have intervened but didn't
 
-Range: [0, 1]. Higher = you steer well (fewer corrections = lower input = higher Υ).
+Each dimension reports a confidence level (high/medium/low) based on sample size.
+
+**Why ASI, not just SE?** SE v1 (the legacy metric) measured acceptance rate — a high SE just means you said "yes" a lot. ASI measures whether your "yes" was the right call. An SE of 0.99 can correspond to an ASI of 0.686 — revealing that 49% of corrections were potentially unnecessary.
 
 ---
 
 ## The taste profile
 
-Saved at `~/.signa/taste-profile.json`. Generated from your last 30 days of logs. Contains:
+Saved at `~/.signa/taste-profile.json`. Generated from your last 30 days of logs. **Behavioral, not content-based** — 5 dimensions:
 
-- **Design preferences** — distilled from your feedback directives ("prefers large numbers", "dislikes median display", "wants interactive elements")
-- **Code preferences** — edit style ("prefers small targeted edits", "net adder", "convention-aware")
-- **Workflow preferences** — tool distribution ("investigate-first", "trial-and-error", "prefers autonomy")
-- **Correction patterns** — top iterated files with loop depth + convergence
-- **Metrics** — SE, acceptance rate, correction rate, design iteration index, agent alignment score
+1. **Steering signature** — your ASI dimensions + SE legacy
+2. **Iteration fingerprint** — which files you iterate on, loop depth, convergence patterns
+3. **Workflow rhythm** — tool distribution, investigate-to-edit ratio, workflow style
+4. **Cascade personality** — pillar distribution tendencies (cache-hoarder, input-minimizer, output-light, high-leverage)
+5. **Correction taxonomy** — what you correct (design vs logic vs config), categorized by file type
+
+**Layer 3 (content-based) is opt-in.** Use `signa taste --deep` or pass `{ deepTaste: true }` to the MCP tool. Raw content is not retained — only distilled preferences.
 
 The profile is **operator-owned**: you can read it, edit it, share it, or delete it. It never leaves your machine by default.
+
+---
+
+## The taste → cascade bridge
+
+The bridge connects your behavioral taste profile to your cascade performance, generating coaching insights unique to SigRank. No other tool can do this — it requires both the taste profile AND the cascade formula.
+
+Example insights:
+- **"Bash-heavy workflow"** (high severity) — you run a lot of Bash commands, which tend to reset context. Impact: lower cache reads → lower leverage → lower Υ. Recommendation: batch your commands.
+- **"Diverging file loops"** (high severity) — you're iterating on files without converging. Impact: high input, low output per turn. Recommendation: stop the loop and give explicit taste guidance.
+- **"Output-light personality"** (high severity) — your output-to-input ratio is low. Impact: low velocity → low Υ. Recommendation: ask the agent for complete implementations, not pieces.
 
 ---
 
@@ -154,11 +232,9 @@ The profile is **operator-owned**: you can read it, edit it, share it, or delete
 
 Everything stays local. The agent reads all three signal layers from your logs, builds the taste profile, computes metrics — all on-device. Nothing is transmitted.
 
-**LLM integration (future):** The architecture supports adding a conversational LLM layer. When added, the operator chooses:
-- **Claude API** — better quality, but token data leaves the device
-- **Local LLM (Ollama)** — stays on-device, max privacy
+**MCP server mode:** All computation happens locally. The MCP server only exposes computed results to your AI agent via stdio. No data is sent to any server.
 
-For v1, the LLM is stubbed — the REPL pattern-matches input to skills directly, no LLM needed.
+**LLM mode (optional):** When enabled, signa sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing.
 
 ---
 
@@ -168,7 +244,7 @@ For v1, the LLM is stubbed — the REPL pattern-matches input to skills directly
 ~/.signa/
   taste-profile.json   — your taste profile (regenerated on each scan)
   history.json         — cascade metrics over time (append-only, capped at 1000)
-  settings.json        — codename, platform, log root path
+  settings.json        — codename, platform, log root path, llm config
 ```
 
 ---
@@ -178,22 +254,23 @@ For v1, the LLM is stubbed — the REPL pattern-matches input to skills directly
 ```
 signa/
   src/
-    index.mjs           — entry: CLI dispatch + REPL boot
+    index.mjs           — entry: CLI dispatch + REPL boot + --mcp flag
     repl.mjs            — interactive chat loop (readline, pattern-matches to skills)
+    mcp-server.mjs      — MCP server: 12 tools, stdio transport, 60s context cache
     logreader.mjs       — rich session-log reader (all 3 signal layers)
-    cascade.mjs         — Υ/SNR/Leverage/Velocity/10xDEV (pure math)
+    cascade.mjs         — Υ/SNR/Leverage/Velocity/class + simulate + cost (pure math)
     store.mjs           — local JSON persistence (~/.signa/)
     watch.mjs           — daemon: auto-scan on .jsonl change
     taste/
-      extractor.mjs     — extract taste signal from logs (3 layers)
+      extractor.mjs     — extract taste signal from logs (3 layers, Layer 3 opt-in)
       profile.mjs       — build + save + load taste profile
-      se.mjs            — Steering Efficiency computation
+      se.mjs            — Steering Efficiency (SE v1) + Appropriate Steering Index (ASI v2)
+      bridge.mjs        — taste → cascade coaching insights
     skills/
-      index.mjs         — all 11 skills (diagnose, simulate, suggest, etc.)
+      index.mjs         — all 13 skills (diagnose, simulate, suggest, taste, asi, etc.)
     llm/
-      stub.mjs          — LLM interface (stub: returns null, REPL uses skills directly)
-      claude.mjs        — Claude API adapter (stubbed, wired for later)
-      local.mjs         — Ollama adapter (stubbed, wired for later)
+      stub.mjs          — LLM interface (delegates to claude.mjs when configured)
+      claude.mjs        — Claude API adapter (operator brings own key, metrics-only)
 ```
 
 ---
