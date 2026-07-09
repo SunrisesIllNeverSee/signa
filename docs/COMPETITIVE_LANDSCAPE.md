@@ -8,13 +8,13 @@
 
 ### Tier 1: Raw token counts (calorie counters)
 
-| Tool | What it ranks | Metric | Privacy |
-|------|---------------|--------|---------|
-| StraVIBE | Total tokens burned | Token volume | Only token counts leave |
-| straude | Total tokens burned | Token volume | Only aggregate stats uploaded |
-| DevsLOG | Productivity score, streaks | LOC + time | VS Code extension |
-| Gitrava | GitHub activity | LOC additions/deletions | GitHub OAuth |
-| KERN | Developer behavioral intelligence | Activity classification | Terminal agent |
+| Tool     | What it ranks                     | Metric                  | Privacy                       |
+| -------- | --------------------------------- | ----------------------- | ----------------------------- |
+| StraVIBE | Total tokens burned               | Token volume            | Only token counts leave       |
+| straude  | Total tokens burned               | Token volume            | Only aggregate stats uploaded |
+| DevsLOG  | Productivity score, streaks       | LOC + time              | VS Code extension             |
+| Gitrava  | GitHub activity                   | LOC additions/deletions | GitHub OAuth                  |
+| KERN     | Developer behavioral intelligence | Activity classification | Terminal agent                |
 
 **The critical finding:** StraVIBE is the closest competitor in form (token
 leaderboard, npm install, privacy model) but the farthest in substance.
@@ -27,63 +27,63 @@ opposite game.
 
 #### Session analysis (7 tools)
 
-| Tool | What it does |
-|------|-------------|
-| Code Insights | CLI, parses sessions into SQLite, AI insights, weekly synthesis |
-| MS AI Engineer Coach | VS Code extension, 45 anti-patterns, reads local logs |
-| claude-code-devtools | Live tool-call timeline, context inspector, replay scrubber |
-| Claude Code Session Analyzer | 4 view modes (Chat, API, Stats, Timeline) |
-| claude-session-analyzer | Per-skill token/cost/time analysis |
-| claude-code-sessions | 11 skills, web dashboard, session intelligence |
-| cursor-session-tracer | MCP observability for Cursor, trace graphs |
+| Tool                         | What it does                                                    |
+| ---------------------------- | --------------------------------------------------------------- |
+| Code Insights                | CLI, parses sessions into SQLite, AI insights, weekly synthesis |
+| MS AI Engineer Coach         | VS Code extension, 45 anti-patterns, reads local logs           |
+| claude-code-devtools         | Live tool-call timeline, context inspector, replay scrubber     |
+| Claude Code Session Analyzer | 4 view modes (Chat, API, Stats, Timeline)                       |
+| claude-session-analyzer      | Per-skill token/cost/time analysis                              |
+| claude-code-sessions         | 11 skills, web dashboard, session intelligence                  |
+| cursor-session-tracer        | MCP observability for Cursor, trace graphs                      |
 
 #### Taste/preference profiling (6 tools)
 
-| Tool | What it profiles | Approach |
-|------|-----------------|----------|
-| Command Code Taste | Code style (RL model) | Proprietary, opaque |
-| taste-ai | Code style (naming, architecture, imports) | Git/session extraction |
-| Taster | Standards from examples | Example-based learning |
-| tasteID | Design sensibility (23 dimensions) | Questionnaire |
-| CoderProfile | Coding style rules | Questionnaire + repo scan |
-| gitstyle | Engineering style wiki | Git history extraction |
+| Tool               | What it profiles                           | Approach                  |
+| ------------------ | ------------------------------------------ | ------------------------- |
+| Command Code Taste | Code style (RL model)                      | Proprietary, opaque       |
+| taste-ai           | Code style (naming, architecture, imports) | Git/session extraction    |
+| Taster             | Standards from examples                    | Example-based learning    |
+| tasteID            | Design sensibility (23 dimensions)         | Questionnaire             |
+| CoderProfile       | Coding style rules                         | Questionnaire + repo scan |
+| gitstyle           | Engineering style wiki                     | Git history extraction    |
 
 **Key distinction:** these tools profile the CODE. signa profiles the OPERATOR.
 
 #### Token optimization (5 tools)
 
-| Tool | What it does | Reduction |
-|------|-------------|-----------|
-| TokenPilot | AST-aware structural reading, MCP server | Up to 90% context |
-| token-diet | Always-on token-efficiency skill | ~31% lower bill |
-| token-optimizer | Filters noisy command output | 60-75% |
-| Token Optimizer (alexgreensh) | 8 surfaces of token waste | Not specified |
-| context-stats | Live monitoring, cache keep-warm | Monitoring |
+| Tool                          | What it does                             | Reduction         |
+| ----------------------------- | ---------------------------------------- | ----------------- |
+| TokenPilot                    | AST-aware structural reading, MCP server | Up to 90% context |
+| token-diet                    | Always-on token-efficiency skill         | ~31% lower bill   |
+| token-optimizer               | Filters noisy command output             | 60-75%            |
+| Token Optimizer (alexgreensh) | 8 surfaces of token waste                | Not specified     |
+| context-stats                 | Live monitoring, cache keep-warm         | Monitoring        |
 
 #### Session replay (6 tools)
 
-| Tool | What it does |
-|------|-------------|
-| Recall | Video-player replay, 100% local |
-| vibe-replay | Animated web replays, HTML/GIF export |
-| claude-replay | Embeddable HTML replays |
-| claude-trace-replay | Trace viewer, token spike spotting |
-| Culpa | Deterministic replay + counterfactual debugging |
-| AgentReel | "Loom for AI coding," MP4 export |
+| Tool                | What it does                                    |
+| ------------------- | ----------------------------------------------- |
+| Recall              | Video-player replay, 100% local                 |
+| vibe-replay         | Animated web replays, HTML/GIF export           |
+| claude-replay       | Embeddable HTML replays                         |
+| claude-trace-replay | Trace viewer, token spike spotting              |
+| Culpa               | Deterministic replay + counterfactual debugging |
+| AgentReel           | "Loom for AI coding," MP4 export                |
 
 #### Prompt coaching (4 tools)
 
-| Tool | What it does |
-|------|-------------|
-| AI Coach | Real-time guidance, hooks into events |
-| Prompt Sensei | Local-first, stage-aware, rewrites prompts |
-| prompt-coach | Scores prompts for token efficiency |
-| claude-code-prompt-improver | Context injection at right moment |
+| Tool                        | What it does                               |
+| --------------------------- | ------------------------------------------ |
+| AI Coach                    | Real-time guidance, hooks into events      |
+| Prompt Sensei               | Local-first, stage-aware, rewrites prompts |
+| prompt-coach                | Scores prompts for token efficiency        |
+| claude-code-prompt-improver | Context injection at right moment          |
 
 ### Tier 3: Cascade architecture (us, only)
 
-| Tool | What it measures | The game |
-|------|-----------------|----------|
+| Tool                               | What it measures                             | The game                              |
+| ---------------------------------- | -------------------------------------------- | ------------------------------------- |
 | signa + sigrank-mcp + signalaf.com | Υ Yield, SNR, Leverage, Velocity, Class, ASI | Compounding — who compounded the best |
 
 ## The academic research (not implemented in any coding tool)

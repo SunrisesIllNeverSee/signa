@@ -47,31 +47,31 @@ you burned — it's how well you compounded them.
 
 ### The four pillars
 
-| Pillar | What it is | What it means |
-|--------|-----------|---------------|
-| **Input** | Fresh tokens you send to the agent | Your instructions, prompts, context |
-| **Output** | Tokens the agent generates back | Code, analysis, explanations |
-| **Cache Create** | Tokens written to the cache | Context you're saving for reuse |
-| **Cache Read** | Tokens read from the cache | Context you're reusing (cheap) |
+| Pillar           | What it is                         | What it means                       |
+| ---------------- | ---------------------------------- | ----------------------------------- |
+| **Input**        | Fresh tokens you send to the agent | Your instructions, prompts, context |
+| **Output**       | Tokens the agent generates back    | Code, analysis, explanations        |
+| **Cache Create** | Tokens written to the cache        | Context you're saving for reuse     |
+| **Cache Read**   | Tokens read from the cache         | Context you're reusing (cheap)      |
 
 ### The cascade metrics
 
-| Metric | Formula | What it measures |
-|--------|---------|-----------------|
-| **Υ Yield** | (cacheRead × output) / input² | How well you compound tokens into output |
-| **SNR** | output / (input + output) | Signal-to-noise ratio of your token flow |
-| **Leverage** | cacheRead / input | How much you reuse vs re-instruct |
-| **Velocity** | output / input | How much output you get per unit of input |
+| Metric       | Formula                       | What it measures                          |
+| ------------ | ----------------------------- | ----------------------------------------- |
+| **Υ Yield**  | (cacheRead × output) / input² | How well you compound tokens into output  |
+| **SNR**      | output / (input + output)     | Signal-to-noise ratio of your token flow  |
+| **Leverage** | cacheRead / input             | How much you reuse vs re-instruct         |
+| **Velocity** | output / input                | How much output you get per unit of input |
 
 ### The class system
 
-| Class | Υ Range | What it means |
-|-------|---------|---------------|
-| BASE | 0 - 100 | Starting point — raw token usage |
-| POWER | 100 - 1,000 | Good compounding — cache leverage working |
-| ARCHITECT | 1,000 - 5,000 | Excellent — high leverage + high velocity |
-| ARCHITECT+ | 5,000 - 15,000 | Exceptional — multi-dimensional efficiency |
-| TRANSMITTER | 15,000+ | Elite — the cascade is compounding optimally |
+| Class       | Υ Range        | What it means                                |
+| ----------- | -------------- | -------------------------------------------- |
+| BASE        | 0 - 100        | Starting point — raw token usage             |
+| POWER       | 100 - 1,000    | Good compounding — cache leverage working    |
+| ARCHITECT   | 1,000 - 5,000  | Excellent — high leverage + high velocity    |
+| ARCHITECT+  | 5,000 - 15,000 | Exceptional — multi-dimensional efficiency   |
+| TRANSMITTER | 15,000+        | Elite — the cascade is compounding optimally |
 
 ## Steering Efficiency (SE) and ASI
 
@@ -94,16 +94,16 @@ interrupt MORE, not less. Accepting everything isn't good steering.
 
 ASI v2 measures whether your interventions were the RIGHT ones:
 
-| Dimension | What it measures | Confidence |
-|-----------|-----------------|------------|
-| Acceptance rate | % of turns accepted | High |
-| Correction rate | % of turns corrected | High |
-| Rejection rate | % of turns rejected | High |
-| Correction precision | Of corrections, how many were likely needed | Medium |
-| Intervention timing | How quickly you intervene | High |
-| Reliance slope | How acceptance changes over sessions | High |
-| Over-correction index | Corrections on files likely already correct | Low |
-| Under-steering index | Acceptances that led to downstream corrections | Medium |
+| Dimension             | What it measures                               | Confidence |
+| --------------------- | ---------------------------------------------- | ---------- |
+| Acceptance rate       | % of turns accepted                            | High       |
+| Correction rate       | % of turns corrected                           | High       |
+| Rejection rate        | % of turns rejected                            | High       |
+| Correction precision  | Of corrections, how many were likely needed    | Medium     |
+| Intervention timing   | How quickly you intervene                      | High       |
+| Reliance slope        | How acceptance changes over sessions           | High       |
+| Over-correction index | Corrections on files likely already correct    | Low        |
+| Under-steering index  | Acceptances that led to downstream corrections | Medium     |
 
 **What's a good ASI?** Higher is better, but the goal isn't 1.0 — it's
 appropriate intervention. The best operators accept when they should, correct
@@ -168,15 +168,16 @@ behavioral taste profile AND the cascade formula.
 
 ## signa vs sigrank-mcp
 
-| | signa | sigrank-mcp |
-|---|---|---|
-| **Who uses it** | You, the operator | Your AI agent (Claude Code, Cursor) |
-| **What it reads** | All 3 signal layers (metadata + structural + content) | 4 token pillars only |
-| **What it does** | Coaches you, builds taste profile, computes ASI | Extracts pillars, submits to leaderboard |
-| **What leaves your machine** | Nothing | 4 integers (input, output, cacheCreate, cacheRead) |
-| **Privacy** | Everything stays local | Only token counts leave |
+|                              | signa                                                 | sigrank-mcp                                        |
+| ---------------------------- | ----------------------------------------------------- | -------------------------------------------------- |
+| **Who uses it**              | You, the operator                                     | Your AI agent (Claude Code, Cursor)                |
+| **What it reads**            | All 3 signal layers (metadata + structural + content) | 4 token pillars only                               |
+| **What it does**             | Coaches you, builds taste profile, computes ASI       | Extracts pillars, submits to leaderboard           |
+| **What leaves your machine** | Nothing                                               | 4 integers (input, output, cacheCreate, cacheRead) |
+| **Privacy**                  | Everything stays local                                | Only token counts leave                            |
 
 They're separate tools for separate jobs:
+
 - **signa** = the coach (you use it, it reads everything, stays local)
 - **sigrank-mcp** = the instrument (your agent uses it, 4 integers leave)
 
@@ -201,20 +202,20 @@ raw content is not retained — only distilled preferences.
 
 ## Skills
 
-| Skill | Trigger | What it does |
-|-------|---------|-------------|
-| `scan` | "scan", "refresh" | Read logs, compute cascade + ASI + taste, save |
-| `diagnose` | "how am I doing", "audit" | Pillar-level audit + ASI breakdown |
-| `simulate` | "simulate", "what if" | Project Υ/class delta from a pillar change |
-| `suggest` | "suggest", "what should I do" | Ranked recommendations with impact |
-| `track` | "track", "am I improving" | Metrics over time from local history |
-| `taste` | "taste", "profile" | Show your taste profile (5 dimensions) |
-| `goal` | "goal", "how do I hit" | Path to a target class |
-| `cost` | "cost", "how much" | Token-to-cost analysis (Claude pricing) |
-| `anomaly` | "anomaly", "did anything drop" | Detect metric drops, pinpoint when |
-| `self-improve` | "self-improve", "coach" | Full cycle: diagnose → suggest → actions |
-| `compare` | "compare", "vs" | Head-to-head vs class average |
-| `watch` | "watch", "daemon" | Background daemon: auto-scan on log changes |
+| Skill          | Trigger                        | What it does                                   |
+| -------------- | ------------------------------ | ---------------------------------------------- |
+| `scan`         | "scan", "refresh"              | Read logs, compute cascade + ASI + taste, save |
+| `diagnose`     | "how am I doing", "audit"      | Pillar-level audit + ASI breakdown             |
+| `simulate`     | "simulate", "what if"          | Project Υ/class delta from a pillar change     |
+| `suggest`      | "suggest", "what should I do"  | Ranked recommendations with impact             |
+| `track`        | "track", "am I improving"      | Metrics over time from local history           |
+| `taste`        | "taste", "profile"             | Show your taste profile (5 dimensions)         |
+| `goal`         | "goal", "how do I hit"         | Path to a target class                         |
+| `cost`         | "cost", "how much"             | Token-to-cost analysis (Claude pricing)        |
+| `anomaly`      | "anomaly", "did anything drop" | Detect metric drops, pinpoint when             |
+| `self-improve` | "self-improve", "coach"        | Full cycle: diagnose → suggest → actions       |
+| `compare`      | "compare", "vs"                | Head-to-head vs class average                  |
+| `watch`        | "watch", "daemon"              | Background daemon: auto-scan on log changes    |
 
 ## License
 

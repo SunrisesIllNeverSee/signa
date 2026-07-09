@@ -2,7 +2,17 @@
 type: build-plan
 title: signa — taste extractor cleanup + SE refinement + documentation (R&D + plan, 2026-07-07)
 description: R&D findings and build plan for refining signa's taste extractor (Layer 3 noise cleanup, directive clustering, profile quality) and Steering Efficiency metric (correction detection, validation, correlation analysis). Includes documentation structure for marketing and user-facing explanation. Built by DEVIN2.
-tags: [sigrank, signa, taste, steering-efficiency, refinement, r&d, documentation, build-plan]
+tags:
+  [
+    sigrank,
+    signa,
+    taste,
+    steering-efficiency,
+    refinement,
+    r&d,
+    documentation,
+    build-plan,
+  ]
 timestamp: 2026-07-07T08:10:00Z
 ---
 
@@ -22,6 +32,7 @@ timestamp: 2026-07-07T08:10:00Z
 
 **What's there:** `src/taste/extractor.mjs` (200 lines) reads aggregated session
 data and distills it into structured preferences across 3 layers:
+
 - Layer 1 (metadata): tool distribution, edit style, reject rate → workflow + code preferences
 - Layer 2 (structural): correction loops, convergence, file iteration concentration → correctionPatterns
 - Layer 3 (content): user feedback directives → design preferences
@@ -47,6 +58,7 @@ catches everything that doesn't match a keyword — just dumps the raw truncated
 text as the "summary."
 
 **The result in the live profile:**
+
 ```json
 "design": [
   "general directive: \"use the cli  or this .... i relly want to see the other other one and the field i dont knwo why its \"",
@@ -105,6 +117,7 @@ just edited. This is proximity-based — it assumes that if you edit the same fi
 soon after the agent did, you're correcting the agent's work.
 
 But this misses nuance:
+
 - **Additive edits:** You edit the same file to ADD something new, not to fix the agent's work. This counts as a "correction" but isn't one.
 - **Sequential development:** The agent edits file A, you edit file A to add the next feature. That's collaboration, not correction.
 - **Missed corrections:** You wait 4+ messages before correcting. The window is k+1 to k+3 — if you correct on message k+5, it's marked "accepted."
@@ -149,6 +162,7 @@ it changes.
 LAUNCH.md (launch runbook).
 
 **What's missing:**
+
 - **User-facing explanation** of what the taste profile is, what it captures, what it doesn't
 - **Marketing copy** — the hook ("your AI coding agent starts blind. signa reads your session logs, learns your taste, and tells you how to improve your token cascade.")
 - **Privacy explainer** — what stays local, what the difference is between signa (reads everything, stays local) and sigrank-mcp (extracts 4 integers, submits to board)
@@ -166,11 +180,13 @@ LAUNCH.md (launch runbook).
 **File:** `src/taste/extractor.mjs`, `summarizeCluster()` function
 
 **Change:** The `other` cluster currently dumps raw truncated text. Replace with:
+
 - If the cluster has 3+ items, summarize as "N general feedback directives" (don't show raw text)
 - If the cluster has 1-2 items, show a cleaned version (strip filler words, truncate to 60 chars, add ellipsis)
 - If the item is < 20 chars or contains > 3 typos, drop it entirely
 
 **Cleanup rules for raw directives:**
+
 - Strip filler words ("um", "like", "i relly", "i dont knwo why")
 - Truncate to first complete sentence (split on `. ! ?`)
 - Drop if < 10 chars after cleanup
@@ -181,6 +197,7 @@ LAUNCH.md (launch runbook).
 **File:** `src/taste/extractor.mjs`, `clusterDirectives()` output
 
 **Change:** Each cluster summary should include the count:
+
 - `"particular about layout, alignment, positioning (12 directives)"` instead of just `"particular about layout, alignment, positioning"`
 - Clusters with 1 directive get a `(1 directive — low confidence)` suffix
 - Clusters with 10+ get `(strong signal — N directives)`
@@ -219,6 +236,7 @@ iterative development.
 **File:** `src/logreader.mjs`, turn classification (line 269-291)
 
 **Changes:**
+
 - **Distinguish additive vs corrective edits:** If the user's edit to the same file has a positive delta (adding content) AND the edit is in a different part of the file (different old_string), it's additive, not corrective. Mark as "accepted" not "corrected."
 - **Expand the window to k+5:** The current k+1 to k+3 window misses slow corrections. Expand to k+1 to k+5 but weight by proximity (k+1 = likely correction, k+5 = maybe correction).
 - **Check for rejection language in user message:** If the user's response message contains "no", "wrong", "revert", "undo", "that's not right" — mark as corrected even if no same-file edit is detected.
@@ -245,6 +263,7 @@ Add SE as a second track. Show: "SE trend: 0.99 → 0.98 → 0.99 (stable)" or
 
 **Change:** Add a validation function that, given multiple operators' data,
 computes:
+
 - Correlation between SE and Υ (Pearson r)
 - Correlation between SE and class tier (Spearman rho)
 - SE distribution by class (do TRANSMITTER operators have higher SE?)
@@ -260,6 +279,7 @@ when signa has multiple users. Mark as "awaiting data" in the output.
 **File:** new `docs/TASTE_PROFILE.md`
 
 **Content:**
+
 - What the taste profile is (your operating style, distilled from session logs)
 - What it captures (design preferences, code style, workflow habits, correction patterns)
 - What it doesn't capture (your code content, your prompts — only the patterns)
@@ -273,6 +293,7 @@ when signa has multiple users. Mark as "awaiting data" in the output.
 **File:** new `docs/STEERING_EFFICIENCY.md`
 
 **Content:**
+
 - What SE is (how well you steer your agent — accepted vs corrected vs rejected)
 - The formula in plain language
 - What a good score looks like (0.9+ = excellent, 0.7-0.9 = good, < 0.7 = needs work)
@@ -285,6 +306,7 @@ when signa has multiple users. Mark as "awaiting data" in the output.
 **File:** new `docs/SIGNA_VS_SIGRANK.md`
 
 **Content:**
+
 - signa = the coach (reads everything, stays local, talks back)
 - sigrank-mcp = the instrument (extracts 4 integers, submits to board, privacy-preserving)
 - Why they're separate (different privacy boundaries, different audiences)
@@ -296,6 +318,7 @@ when signa has multiple users. Mark as "awaiting data" in the output.
 **File:** new `docs/MARKETING.md`
 
 **Content:**
+
 - The hook: "your AI coding agent starts blind. signa reads your session logs, learns your taste, and tells you how to improve your token cascade."
 - The positioning: not an analytics tool, not a dashboard — a coach that talks back
 - The differentiation: local-only, taste-aware, steering-efficient
@@ -321,6 +344,7 @@ dataset.
 ## What this enables
 
 After this work:
+
 - The taste profile is clean enough to show to users without embarrassment
 - SE is a real coaching signal, not just a number
 - The documentation explains the product to users and marketers
@@ -329,4 +353,4 @@ After this work:
 
 ---
 
-*Built by DEVIN2, 2026-07-07. Companion to PLAN.md + LAUNCH.md.*
+_Built by DEVIN2, 2026-07-07. Companion to PLAN.md + LAUNCH.md._

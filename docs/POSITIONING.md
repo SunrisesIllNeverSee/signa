@@ -34,17 +34,18 @@ data.
 **Behavioral coaching that connects your steering to your cascade rank.**
 
 This lane is defined by three things only signa has:
+
 1. The cascade formula (Υ/SNR/Leverage/Velocity/Class)
 2. ASI (Appropriate Steering Index — nobody else measures steering)
 3. The taste → cascade bridge (nobody else connects behavior to rank)
 
 ## The three-tier model
 
-| Tier | What it measures | Example tools | The game |
-|------|-----------------|---------------|----------|
-| Tier 1 | Token volume (raw count) | StraVIBE, straude | Consumption — who burned the most |
-| Tier 2 | Behavioral patterns | Code Insights, taste-ai, MS AI Engineer Coach | Analysis — understand what happened |
-| Tier 3 | Cascade architecture | signa (only) | Compounding — who compounded the best |
+| Tier   | What it measures         | Example tools                                 | The game                              |
+| ------ | ------------------------ | --------------------------------------------- | ------------------------------------- |
+| Tier 1 | Token volume (raw count) | StraVIBE, straude                             | Consumption — who burned the most     |
+| Tier 2 | Behavioral patterns      | Code Insights, taste-ai, MS AI Engineer Coach | Analysis — understand what happened   |
+| Tier 3 | Cascade architecture     | signa (only)                                  | Compounding — who compounded the best |
 
 Tier 1 and Tier 3 have the same privacy model ("only token counts leave") but
 opposite games. Tier 1 sums the counts. Tier 3 computes the relationships.
@@ -54,13 +55,13 @@ not cascade architecture. They can complement signa but can't replace it.
 
 ## The two-tool architecture
 
-| | signa | sigrank-mcp |
-|---|---|---|
-| Who uses it | You (the operator) | Your AI agent |
-| What it reads | All 3 layers (metadata + structural + content) | 4 token pillars only |
-| What it does | Coaches, taste profiles, ASI | Extracts, signs, submits |
-| What leaves | Nothing | 4 integers |
-| Privacy | Everything stays local | Only token counts leave |
+|               | signa                                          | sigrank-mcp              |
+| ------------- | ---------------------------------------------- | ------------------------ |
+| Who uses it   | You (the operator)                             | Your AI agent            |
+| What it reads | All 3 layers (metadata + structural + content) | 4 token pillars only     |
+| What it does  | Coaches, taste profiles, ASI                   | Extracts, signs, submits |
+| What leaves   | Nothing                                        | 4 integers               |
+| Privacy       | Everything stays local                         | Only token counts leave  |
 
 The privacy boundary IS the product design. signa reads everything but stays
 local. sigrank-mcp extracts only 4 integers and submits. They're separate tools

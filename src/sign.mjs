@@ -12,61 +12,80 @@
  * signature = base64 of the 64-byte ed25519 signature over canonical_bytes.
  */
 
-import { createHash, createPrivateKey, createPublicKey, sign as edSign, verify as edVerify } from 'node:crypto'
+import {
+  createHash,
+  createPrivateKey,
+  createPublicKey,
+  sign as edSign,
+  verify as edVerify,
+} from "node:crypto";
 
-const DERIVED_AGENT_FIELDS = ['signature', 'snapshot_hash']
+const DERIVED_AGENT_FIELDS = ["signature", "snapshot_hash"];
 
 function sortDeep(v) {
-  if (Array.isArray(v)) return v.map(sortDeep)
-  if (v && typeof v === 'object') {
-    const out = {}
-    for (const k of Object.keys(v).sort()) out[k] = sortDeep(v[k])
-    return out
+  if (Array.isArray(v)) return v.map(sortDeep);
+  if (v && typeof v === "object") {
+    const out = {};
+    for (const k of Object.keys(v).sort()) out[k] = sortDeep(v[k]);
+    return out;
   }
-  return v
+  return v;
 }
 
 export function canonicalJson(payload) {
-  const clone = JSON.parse(JSON.stringify(payload))
-  const agent = clone.agent
-  if (agent && typeof agent === 'object') {
-    for (const f of DERIVED_AGENT_FIELDS) delete agent[f]
+  const clone = JSON.parse(JSON.stringify(payload));
+  const agent = clone.agent;
+  if (agent && typeof agent === "object") {
+    for (const f of DERIVED_AGENT_FIELDS) delete agent[f];
   }
-  return JSON.stringify(sortDeep(clone))
+  return JSON.stringify(sortDeep(clone));
 }
 
 export function canonicalBytes(payload) {
-  return Buffer.from(canonicalJson(payload), 'utf-8')
+  return Buffer.from(canonicalJson(payload), "utf-8");
 }
 
 export function snapshotHash(payload) {
-  return `sha256:${createHash('sha256').update(canonicalBytes(payload)).digest('hex')}`
+  return `sha256:${createHash("sha256").update(canonicalBytes(payload)).digest("hex")}`;
 }
 
-const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex')
+const ED25519_SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
 
 function publicKeyFrom(pk) {
   try {
-    const body = pk.startsWith('ed25519:') ? pk.slice('ed25519:'.length) : pk
-    const raw = Buffer.from(body, 'base64')
-    if (raw.length !== 32) return null
-    return createPublicKey({ key: Buffer.concat([ED25519_SPKI_PREFIX, raw]), format: 'der', type: 'spki' })
+    const body = pk.startsWith("ed25519:") ? pk.slice("ed25519:".length) : pk;
+    const raw = Buffer.from(body, "base64");
+    if (raw.length !== 32) return null;
+    return createPublicKey({
+      key: Buffer.concat([ED25519_SPKI_PREFIX, raw]),
+      format: "der",
+      type: "spki",
+    });
   } catch {
-    return null
+    return null;
   }
 }
 
 export function signPayload(payload, privateKeyPkcs8B64) {
-  const key = createPrivateKey({ key: Buffer.from(privateKeyPkcs8B64, 'base64'), format: 'der', type: 'pkcs8' })
-  return edSign(null, canonicalBytes(payload), key).toString('base64')
+  const key = createPrivateKey({
+    key: Buffer.from(privateKeyPkcs8B64, "base64"),
+    format: "der",
+    type: "pkcs8",
+  });
+  return edSign(null, canonicalBytes(payload), key).toString("base64");
 }
 
 export function verifyPayload(payload, signatureB64, publicKey) {
-  const key = publicKeyFrom(publicKey)
-  if (!key) return false
+  const key = publicKeyFrom(publicKey);
+  if (!key) return false;
   try {
-    return edVerify(null, canonicalBytes(payload), key, Buffer.from(signatureB64, 'base64'))
+    return edVerify(
+      null,
+      canonicalBytes(payload),
+      key,
+      Buffer.from(signatureB64, "base64"),
+    );
   } catch {
-    return false
+    return false;
   }
 }

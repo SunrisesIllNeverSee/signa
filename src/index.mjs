@@ -14,43 +14,52 @@
  * Everything stays local. Nothing leaves your machine.
  */
 
-import { join } from 'node:path'
-import { homedir } from 'node:os'
-import { readAllSessions, aggregateSessions } from './logreader.mjs'
-import { cascade as computeCascade } from './cascade.mjs'
-import { steeringEfficiency } from './taste/se.mjs'
-import { generateAndSave, loadProfile } from './taste/profile.mjs'
-import { loadSettings, saveSettings, appendHistory } from './store.mjs'
-import { startRepl } from './repl.mjs'
+import { join } from "node:path";
+import { homedir } from "node:os";
+import { readAllSessions, aggregateSessions } from "./logreader.mjs";
+import { cascade as computeCascade } from "./cascade.mjs";
+import { steeringEfficiency } from "./taste/se.mjs";
+import { generateAndSave, loadProfile } from "./taste/profile.mjs";
+import { loadSettings, saveSettings, appendHistory } from "./store.mjs";
+import { startRepl } from "./repl.mjs";
 import {
-  skillDiagnose, skillSimulate, skillSuggest, skillTrack,
-  skillTaste, skillGoal, skillCost, skillAnomaly, skillSelfImprove, skillCompare,
-  skillASI, skillBridge,
-} from './skills/index.mjs'
+  skillDiagnose,
+  skillSimulate,
+  skillSuggest,
+  skillTrack,
+  skillTaste,
+  skillGoal,
+  skillCost,
+  skillAnomaly,
+  skillSelfImprove,
+  skillCompare,
+  skillASI,
+  skillBridge,
+} from "./skills/index.mjs";
 
-const DEFAULT_ROOT = join(homedir(), '.claude', 'projects')
+const DEFAULT_ROOT = join(homedir(), ".claude", "projects");
 
 /** Scan logs, compute everything, save to history + taste profile, return ctx. */
 async function scan(opts = {}) {
-  const settings = await loadSettings()
-  const root = opts.root || settings.root || DEFAULT_ROOT
-  const sinceDays = opts.sinceDays || 30
-  const log = opts.silent ? () => {} : (msg) => console.log(msg)
+  const settings = await loadSettings();
+  const root = opts.root || settings.root || DEFAULT_ROOT;
+  const sinceDays = opts.sinceDays || 30;
+  const log = opts.silent ? () => {} : (msg) => console.log(msg);
 
-  log(`Reading logs from ${root} (last ${sinceDays}d)...`)
-  const sessions = await readAllSessions(root, { sinceDays, maxFiles: 500 })
+  log(`Reading logs from ${root} (last ${sinceDays}d)...`);
+  const sessions = await readAllSessions(root, { sinceDays, maxFiles: 500 });
   if (sessions.length === 0) {
-    log('No sessions found.')
-    return null
+    log("No sessions found.");
+    return null;
   }
-  log(`  ${sessions.length} sessions found.`)
+  log(`  ${sessions.length} sessions found.`);
 
-  const agg = aggregateSessions(sessions)
-  const cas = computeCascade(agg.tokens)
-  const se = steeringEfficiency(agg)
+  const agg = aggregateSessions(sessions);
+  const cas = computeCascade(agg.tokens);
+  const se = steeringEfficiency(agg);
 
   // Generate + save taste profile
-  const profile = await generateAndSave(agg, settings.codename || 'local')
+  const profile = await generateAndSave(agg, settings.codename || "local");
 
   // Append to history
   await appendHistory({
@@ -58,151 +67,160 @@ async function scan(opts = {}) {
     se,
     tokens: agg.tokens,
     sessionCount: agg.sessionCount,
-  })
+  });
 
-  log(`  Υ ${cas.yield?.toLocaleString()}  ·  ${cas.class}  ·  SE ${se.se}`)
-  log(`  Taste profile saved.`)
+  log(`  Υ ${cas.yield?.toLocaleString()}  ·  ${cas.class}  ·  SE ${se.se}`);
+  log(`  Taste profile saved.`);
 
-  return { agg, cas, se, profile, settings, raw: { sessions, agg } }
+  return { agg, cas, se, profile, settings, raw: { sessions, agg } };
 }
 
 /** Build ctx from the most recent history entry (for non-scan commands). */
 async function ctxFromHistory() {
-  const settings = await loadSettings()
-  const { loadHistory } = await import('./store.mjs')
-  const history = await loadHistory()
-  if (history.length === 0) return { settings, cas: null, se: null, profile: null, agg: null }
-  const last = history[history.length - 1]
-  const profile = await loadProfile()
+  const settings = await loadSettings();
+  const { loadHistory } = await import("./store.mjs");
+  const history = await loadHistory();
+  if (history.length === 0)
+    return { settings, cas: null, se: null, profile: null, agg: null };
+  const last = history[history.length - 1];
+  const profile = await loadProfile();
   return {
     settings,
     cas: last.cascade,
     se: last.se,
     profile,
     agg: null,
-  }
+  };
 }
 
 async function main() {
-  const arg = process.argv[2] || ''
-  const rest = process.argv.slice(3).join(' ')
+  const arg = process.argv[2] || "";
+  const rest = process.argv.slice(3).join(" ");
 
   // MCP server mode — expose skills as MCP tools for the operator's own agent
-  if (arg === '--mcp' || arg === 'mcp') {
-    const { startServer } = await import('./mcp-server.mjs')
-    await startServer()
-    return
+  if (arg === "--mcp" || arg === "mcp") {
+    const { startServer } = await import("./mcp-server.mjs");
+    await startServer();
+    return;
   }
 
   switch (arg) {
-    case '':
-    case 'repl':
-    case 'chat': {
+    case "":
+    case "repl":
+    case "chat": {
       // Start REPL — scan first if no history
-      let ctx = await ctxFromHistory()
+      let ctx = await ctxFromHistory();
       if (!ctx.cas) {
-        console.log('No history found. Running initial scan...\n')
-        ctx = await scan()
-        if (!ctx) { process.exit(0) }
+        console.log("No history found. Running initial scan...\n");
+        ctx = await scan();
+        if (!ctx) {
+          process.exit(0);
+        }
       }
       await startRepl(ctx, async () => {
-        const fresh = await scan()
+        const fresh = await scan();
         if (fresh) {
-          ctx.cas = fresh.cas
-          ctx.se = fresh.se
-          ctx.profile = fresh.profile
-          ctx.agg = fresh.agg
+          ctx.cas = fresh.cas;
+          ctx.se = fresh.se;
+          ctx.profile = fresh.profile;
+          ctx.agg = fresh.agg;
         }
-      })
-      break
+      });
+      break;
     }
-    case 'scan': {
-      const ctx = await scan()
-      if (!ctx) process.exit(1)
-      console.log('\n' + await skillDiagnose(ctx))
-      break
+    case "scan": {
+      const ctx = await scan();
+      if (!ctx) process.exit(1);
+      console.log("\n" + (await skillDiagnose(ctx)));
+      break;
     }
-    case 'diagnose': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillDiagnose(ctx))
-      break
+    case "diagnose": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillDiagnose(ctx));
+      break;
     }
-    case 'simulate': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillSimulate(ctx, rest))
-      break
+    case "simulate": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillSimulate(ctx, rest));
+      break;
     }
-    case 'suggest': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillSuggest(ctx))
-      break
+    case "suggest": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillSuggest(ctx));
+      break;
     }
-    case 'track': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillTrack(ctx))
-      break
+    case "track": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillTrack(ctx));
+      break;
     }
-    case 'taste': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillTaste(ctx))
-      break
+    case "taste": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillTaste(ctx));
+      break;
     }
-    case 'asi': {
+    case "asi": {
       // ASI needs agg.turns which isn't in history — scan fresh
-      const ctx = await scan({ silent: true })
-      if (!ctx) { console.log('No sessions found.'); break }
-      console.log(await skillASI(ctx))
-      break
+      const ctx = await scan({ silent: true });
+      if (!ctx) {
+        console.log("No sessions found.");
+        break;
+      }
+      console.log(await skillASI(ctx));
+      break;
     }
-    case 'bridge': {
+    case "bridge": {
       // Bridge needs agg + taste which aren't fully in history — scan fresh
-      const ctx = await scan({ silent: true })
-      if (!ctx) { console.log('No sessions found.'); break }
-      console.log(await skillBridge(ctx))
-      break
+      const ctx = await scan({ silent: true });
+      if (!ctx) {
+        console.log("No sessions found.");
+        break;
+      }
+      console.log(await skillBridge(ctx));
+      break;
     }
-    case 'goal': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillGoal(ctx, rest))
-      break
+    case "goal": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillGoal(ctx, rest));
+      break;
     }
-    case 'cost': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillCost(ctx))
-      break
+    case "cost": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillCost(ctx));
+      break;
     }
-    case 'anomaly': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillAnomaly(ctx))
-      break
+    case "anomaly": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillAnomaly(ctx));
+      break;
     }
-    case 'self-improve': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillSelfImprove(ctx))
-      break
+    case "self-improve": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillSelfImprove(ctx));
+      break;
     }
-    case 'compare': {
-      const ctx = await ctxFromHistory()
-      console.log(await skillCompare(ctx, rest))
-      break
+    case "compare": {
+      const ctx = await ctxFromHistory();
+      console.log(await skillCompare(ctx, rest));
+      break;
     }
-    case 'watch': {
-      const { startWatch } = await import('./watch.mjs')
-      const settings = await loadSettings()
-      const root = settings.root || DEFAULT_ROOT
-      console.log('Starting watch daemon. Ctrl-C to stop.')
+    case "watch": {
+      const { startWatch } = await import("./watch.mjs");
+      const settings = await loadSettings();
+      const root = settings.root || DEFAULT_ROOT;
+      console.log("Starting watch daemon. Ctrl-C to stop.");
       startWatch(root, async () => {
-        console.log('\n[watch] change detected, scanning...')
-        await scan()
-        console.log('[watch] done.\n')
-      })
+        console.log("\n[watch] change detected, scanning...");
+        await scan();
+        console.log("[watch] done.\n");
+      });
       // Keep alive
-      setInterval(() => {}, 1000)
-      break
+      setInterval(() => {}, 1000);
+      break;
     }
-    case '--help':
-    case '-h':
-    case 'help': {
+    case "--help":
+    case "-h":
+    case "help": {
       console.log(`
 signa — interactive token-cascade agent
 
@@ -233,16 +251,16 @@ MCP server mode:
     { "mcpServers": { "signa": { "command": "signa", "args": ["--mcp"] } } }
 
 Everything stays local. Nothing leaves your machine.
-`)
-      break
+`);
+      break;
     }
     default:
-      console.log(`Unknown command: ${arg}. Run "signa help" for usage.`)
-      process.exit(1)
+      console.log(`Unknown command: ${arg}. Run "signa help" for usage.`);
+      process.exit(1);
   }
 }
 
-main().catch(err => {
-  console.error(`Error: ${err.message}`)
-  process.exit(1)
-})
+main().catch((err) => {
+  console.error(`Error: ${err.message}`);
+  process.exit(1);
+});

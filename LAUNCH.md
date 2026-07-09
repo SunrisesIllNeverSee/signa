@@ -16,6 +16,7 @@ timestamp: 2026-07-06T04:30:00Z
 ## Phase 1 — ship what's built (owner, ~30 min)
 
 ### 1. Create the GitHub repo
+
 - [ ] Create `SunrisesIllNeverSee/signa` (private or public — owner call)
 - [ ] Push the local repo:
   ```bash
@@ -25,11 +26,13 @@ timestamp: 2026-07-06T04:30:00Z
   ```
 
 ### 2. npm publish (optional — can run from clone for now)
+
 - [ ] Check `signa` name on npm. If taken, use `@sigrank/signa` (scoped)
 - [ ] `npm publish` from inside the repo dir (not from $HOME — grabs wrong package.json)
 - [ ] Verify: `npx signa --help` works from a clean machine
 
 ### 3. Announcement (owner call on timing)
+
 - [ ] Blog post / tweet / HN? The hook: "your AI coding agent starts blind. signa reads your session logs, learns your taste, and tells you how to improve your token cascade."
 - [ ] Cross-link from signalaf.com (maybe a /signa page or a link in the nav)
 
@@ -38,6 +41,7 @@ timestamp: 2026-07-06T04:30:00Z
 ## Phase 2 — dev follow-ups (when ready, not blocking launch)
 
 ### LLM integration (the big one)
+
 The architecture supports it; the stubs are wired. Pick one or both:
 
 - [ ] **Claude API adapter** (`src/llm/claude.mjs`) — wire the actual API call. The operator sets `ANTHROPIC_API_KEY` + `settings.llm = "claude"`. Privacy tradeoff: token data leaves the device. Better conversation quality.
@@ -47,21 +51,25 @@ The architecture supports it; the stubs are wired. Pick one or both:
 When the LLM is wired, it wraps the existing skills — it doesn't replace them. The LLM picks which skill to call and formats the output conversationally. The skills stay as the deterministic core.
 
 ### MCP server mode
+
 - [ ] Expose the 11 skills as MCP tools so they're callable from Claude Code / Cursor / Windsurf
 - [ ] This makes signa work inside the IDE, not just the terminal
 - [ ] The skills are already pure functions — wrapping them as MCP tools is mostly schema work
 
 ### Session recording + replay
+
 - [ ] Record sessions as structured artifacts (token flow, tool patterns, correction loops over time)
 - [ ] Replay visualization — "speedrun replays for AI coding"
 - [ ] This is the Strava angle from the brainstorm
 
 ### Event infrastructure
+
 - [ ] Daily challenges, hackathons, head-to-head cascade duels
 - [ ] Server-side: event model, challenge specs, live leaderboard
 - [ ] This is the competitive platform angle from the brainstorm
 
 ### Multi-platform adapters
+
 - [ ] Cursor, Codex, Gemini log readers (patterns are in sigrank-mcp/adapters.mjs)
 - [ ] The logreader.mjs is Claude Code–specific; the adapter contract is the same
 
@@ -100,6 +108,7 @@ When the LLM is wired, it wraps the existing skills — it doesn't replace them.
 ## The brainstorm package (reference, untouched)
 
 `~/Desktop/SigRank/Devins_Plans/_planning/brainstorm-package/` — 5 files, 3,299 lines:
+
 - `README.md` — orientation
 - `NEW_AGENT_BRAINSTORM.md` — the agent design space (5 interaction models, 10 decisions, 5 candidate directions)
 - `TASTE_LEARNING_BRAINSTORM.md` — taste learning + competitive research + events (the main brainstorm, ~1,980 lines)
@@ -132,4 +141,4 @@ These are the 15 decisions from the brainstorm that weren't settled by the build
 
 ---
 
-*Last updated: 2026-07-06. Built by DEVIN session. Pick up here to launch.*
+_Last updated: 2026-07-06. Built by DEVIN session. Pick up here to launch._

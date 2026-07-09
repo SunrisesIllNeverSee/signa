@@ -23,8 +23,8 @@
  *   last_ts:      string? — ISO timestamp of the last session in the file
  */
 
-import { createHash } from 'node:crypto'
-import { statSync, readFileSync } from 'node:fs'
+import { createHash } from "node:crypto";
+import { statSync, readFileSync } from "node:fs";
 
 /**
  * Build a source_attestation entry for a single log file.
@@ -32,21 +32,24 @@ import { statSync, readFileSync } from 'node:fs'
  */
 export function attestFile(filePath, sessions) {
   try {
-    const stat = statSync(filePath)
-    const content = readFileSync(filePath, 'utf-8')
+    const stat = statSync(filePath);
+    const content = readFileSync(filePath, "utf-8");
 
-    const pathHash = createHash('sha256').update(filePath).digest('hex')
-    const contentHash = createHash('sha256').update(content).digest('hex')
-    const lines = content.split('\n').filter((l) => l.length > 0).length
+    const pathHash = createHash("sha256").update(filePath).digest("hex");
+    const contentHash = createHash("sha256").update(content).digest("hex");
+    const lines = content.split("\n").filter((l) => l.length > 0).length;
 
     // Extract first/last timestamps from the sessions that came from this file
-    let firstTs = null
-    let lastTs = null
+    let firstTs = null;
+    let lastTs = null;
     if (sessions && sessions.length > 0) {
-      const ts = sessions.map((s) => s.timestamp).filter(Boolean).sort()
+      const ts = sessions
+        .map((s) => s.timestamp)
+        .filter(Boolean)
+        .sort();
       if (ts.length > 0) {
-        firstTs = ts[0]
-        lastTs = ts[ts.length - 1]
+        firstTs = ts[0];
+        lastTs = ts[ts.length - 1];
       }
     }
 
@@ -58,9 +61,9 @@ export function attestFile(filePath, sessions) {
       lines,
       first_ts: firstTs,
       last_ts: lastTs,
-    }
+    };
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -72,10 +75,10 @@ export function attestFile(filePath, sessions) {
  * @returns {Array} — source_attestation entries (empty if no files)
  */
 export function buildAttestation(files) {
-  const entries = []
+  const entries = [];
   for (const f of files) {
-    const entry = attestFile(f.path, f.sessions)
-    if (entry) entries.push(entry)
+    const entry = attestFile(f.path, f.sessions);
+    if (entry) entries.push(entry);
   }
-  return entries
+  return entries;
 }

@@ -2,7 +2,18 @@
 type: research-report
 title: signa — full landscape scan + findings + build recommendations (2026-07-07)
 description: Comprehensive competitive landscape analysis for the signa agent. Covers 30+ tools across 6 categories (session analysis, taste profiling, token optimization, session replay, Strava-for-coding, prompt coaching), the academic research baseline, the corrected competitive positioning (StraVIBE is a calorie counter, SigRank is a metabolic panel), what's genuinely novel vs me-too, and prioritized build recommendations. Built by DEVIN2 after full landscape scan.
-tags: [sigrank, signa, research, competitive-landscape, findings, build-recommendations, cascade, steering-efficiency, moat]
+tags:
+  [
+    sigrank,
+    signa,
+    research,
+    competitive-landscape,
+    findings,
+    build-recommendations,
+    cascade,
+    steering-efficiency,
+    moat,
+  ]
 timestamp: 2026-07-07T09:00:00Z
 ---
 
@@ -51,15 +62,15 @@ operates on the cascade architecture (Tier 3), which only SigRank provides.
 Tools that parse AI coding session logs and provide analysis, insights, or
 anti-pattern detection.
 
-| Tool | What it does | Data layer | Privacy |
-|------|-------------|------------|---------|
-| **Code Insights** | CLI, parses Claude Code/Cursor/Codex/Copilot sessions into local SQLite. Session browser, AI-powered insights (decisions, learnings, techniques), prompt quality scoring, weekly cross-session synthesis with friction breakdown. | Behavioral (Tier 2) | Local |
-| **Microsoft AI Engineer Coach** | VS Code extension + Copilot canvas. Reads local session logs, detects 45 anti-patterns across prompt quality, session hygiene, code review, tool mastery, context management. Tracks progress, measures AI-generated code volume, discovers reusable skills. | Behavioral (Tier 2) | Local |
-| **claude-code-devtools** | Local web app with live tool-call timeline, context inspector, file heatmap, replay scrubber. Real-time observability. | Behavioral (Tier 2) | Local |
-| **Claude Code Session Analyzer** | Zero-dependency Python viewer. 4 modes: Chat View, API View (reconstructed API boundaries with token breakdown), Stats, Timeline. | Token + behavioral | Local |
-| **claude-session-analyzer** (yonk-labs) | CLI/TUI for per-session and per-skill token/cost/time analysis. Finds which prompts or skills are slowing you down. | Token + behavioral | Local |
-| **claude-code-sessions** | Plugin with 11 skills and web dashboard for session intelligence: search, analyze, manage sessions across projects. | Behavioral (Tier 2) | Local |
-| **cursor-session-tracer** | MCP-based observability layer for Cursor. Logs agent decisions, file touches, reasoning chains in real-time. Creates trace graphs for debugging and PR review. | Behavioral (Tier 2) | Local |
+| Tool                                    | What it does                                                                                                                                                                                                                                                 | Data layer          | Privacy |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------- |
+| **Code Insights**                       | CLI, parses Claude Code/Cursor/Codex/Copilot sessions into local SQLite. Session browser, AI-powered insights (decisions, learnings, techniques), prompt quality scoring, weekly cross-session synthesis with friction breakdown.                            | Behavioral (Tier 2) | Local   |
+| **Microsoft AI Engineer Coach**         | VS Code extension + Copilot canvas. Reads local session logs, detects 45 anti-patterns across prompt quality, session hygiene, code review, tool mastery, context management. Tracks progress, measures AI-generated code volume, discovers reusable skills. | Behavioral (Tier 2) | Local   |
+| **claude-code-devtools**                | Local web app with live tool-call timeline, context inspector, file heatmap, replay scrubber. Real-time observability.                                                                                                                                       | Behavioral (Tier 2) | Local   |
+| **Claude Code Session Analyzer**        | Zero-dependency Python viewer. 4 modes: Chat View, API View (reconstructed API boundaries with token breakdown), Stats, Timeline.                                                                                                                            | Token + behavioral  | Local   |
+| **claude-session-analyzer** (yonk-labs) | CLI/TUI for per-session and per-skill token/cost/time analysis. Finds which prompts or skills are slowing you down.                                                                                                                                          | Token + behavioral  | Local   |
+| **claude-code-sessions**                | Plugin with 11 skills and web dashboard for session intelligence: search, analyze, manage sessions across projects.                                                                                                                                          | Behavioral (Tier 2) | Local   |
+| **cursor-session-tracer**               | MCP-based observability layer for Cursor. Logs agent decisions, file touches, reasoning chains in real-time. Creates trace graphs for debugging and PR review.                                                                                               | Behavioral (Tier 2) | Local   |
 
 **What they measure:** tool call distribution, session duration, file edit
 patterns, prompt quality scores, anti-pattern detection, context health.
@@ -71,14 +82,14 @@ system, SE, taste → cascade connection, leaderboard integration.
 
 Tools that extract coding style, naming conventions, or design preferences.
 
-| Tool | What it does | Approach | Output format |
-|------|-------------|----------|---------------|
-| **Command Code Taste** | Meta neuro-symbolic "taste-1" model with continuous RL. Learns from every accept, reject, edit. Builds invisible architecture of choices, structures, patterns. Transferable across projects. | Proprietary RL model | Opaque (locked to platform) |
-| **taste-ai** | Zero-config auto-learner. Compresses context from 56K→1.9K tokens. Learns coding patterns from git history and session logs. Extracts NAMING, ARCHITECTURE, IMPORTS, ERROR_HANDLING, STYLE into TASTE.md. | Pattern extraction from git/logs | TASTE.md + .agent-taste.json |
-| **Taster** | Teach AI your taste by showing examples. Reverse-engineers standards into reusable profile that's both human-readable style guide and executable classifier. Works for photos, essays, code standards. | Example-based learning | Style guide + classifier |
-| **tasteID** | Maps design sensibility across 23 dimensions. Exports as creative brief any AI tool understands. Three sections: ALWAYS (rigid principles), BY DEFAULT (flexible defaults), SPECIFIC (personal words). | Questionnaire-based | Creative brief |
-| **CoderProfile** | Turns coding style into AI-ready rules for Claude, Cursor, Codex. Quick/Detailed/Deep questionnaires, optional GitHub repo scan. | Questionnaire + repo scan | CLAUDE.md, .cursorrules, AI-INSTRUCTIONS.md |
-| **gitstyle** | Generates personal engineering style wiki from GitHub commit history. 5-stage pipeline: fetch, sample, extract, compile, lint. | Git history extraction | Obsidian-compatible markdown |
+| Tool                   | What it does                                                                                                                                                                                              | Approach                         | Output format                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------- |
+| **Command Code Taste** | Meta neuro-symbolic "taste-1" model with continuous RL. Learns from every accept, reject, edit. Builds invisible architecture of choices, structures, patterns. Transferable across projects.             | Proprietary RL model             | Opaque (locked to platform)                 |
+| **taste-ai**           | Zero-config auto-learner. Compresses context from 56K→1.9K tokens. Learns coding patterns from git history and session logs. Extracts NAMING, ARCHITECTURE, IMPORTS, ERROR_HANDLING, STYLE into TASTE.md. | Pattern extraction from git/logs | TASTE.md + .agent-taste.json                |
+| **Taster**             | Teach AI your taste by showing examples. Reverse-engineers standards into reusable profile that's both human-readable style guide and executable classifier. Works for photos, essays, code standards.    | Example-based learning           | Style guide + classifier                    |
+| **tasteID**            | Maps design sensibility across 23 dimensions. Exports as creative brief any AI tool understands. Three sections: ALWAYS (rigid principles), BY DEFAULT (flexible defaults), SPECIFIC (personal words).    | Questionnaire-based              | Creative brief                              |
+| **CoderProfile**       | Turns coding style into AI-ready rules for Claude, Cursor, Codex. Quick/Detailed/Deep questionnaires, optional GitHub repo scan.                                                                          | Questionnaire + repo scan        | CLAUDE.md, .cursorrules, AI-INSTRUCTIONS.md |
+| **gitstyle**           | Generates personal engineering style wiki from GitHub commit history. 5-stage pipeline: fetch, sample, extract, compile, lint.                                                                            | Git history extraction           | Obsidian-compatible markdown                |
 
 **What they profile:** code style (naming, architecture, imports, error
 handling), design sensibility, banned patterns.
@@ -92,13 +103,13 @@ OPERATOR's behavior in relation to cascade efficiency.
 Tools that reduce token consumption through context management, output
 filtering, or behavioral changes.
 
-| Tool | What it does | Reduction claim | Approach |
-|------|-------------|-----------------|----------|
-| **TokenPilot** | MCP server for token-efficient code navigation with AST-aware structural reading. Smart read tools, PreToolUse hooks to intercept heavy native calls, tp-* subagents with tight response budgets. | Up to 90% context reduction | AST-aware structural reading |
-| **token-diet** | Always-on token-efficiency skill for coding agents. Trims tokens across replies, docs, tests, code, context, tool use. Modes: on, lite, ultra, off. | ~31% lower bill on average | Behavioral trimming |
-| **token-optimizer** (edisonaugusthy) | Filters noisy command output before sent back to agent. Preserves errors, failures, changed files, paths, summaries while removing repeated progress output, boilerplate. | 60-75% reduction | Output filtering |
-| **Token Optimizer** (alexgreensh) | Cuts tokens across 8 surfaces: structural (bloated configs, unused skills), runtime (verbose output, re-reads), behavioral (model misrouting, cache expiry, retry loops). | Not specified | 8-surface optimization |
-| **context-stats** | Live status line + graph dashboard, session export, cross-project reports. Tracks context zone, MI score, token delta, cache activity. Cache keep-warm for Claude's 5-minute TTL. | Not specified (monitoring) | Monitoring + cache keep-warm |
+| Tool                                 | What it does                                                                                                                                                                                      | Reduction claim             | Approach                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------- |
+| **TokenPilot**                       | MCP server for token-efficient code navigation with AST-aware structural reading. Smart read tools, PreToolUse hooks to intercept heavy native calls, tp-* subagents with tight response budgets. | Up to 90% context reduction | AST-aware structural reading |
+| **token-diet**                       | Always-on token-efficiency skill for coding agents. Trims tokens across replies, docs, tests, code, context, tool use. Modes: on, lite, ultra, off.                                               | ~31% lower bill on average  | Behavioral trimming          |
+| **token-optimizer** (edisonaugusthy) | Filters noisy command output before sent back to agent. Preserves errors, failures, changed files, paths, summaries while removing repeated progress output, boilerplate.                         | 60-75% reduction            | Output filtering             |
+| **Token Optimizer** (alexgreensh)    | Cuts tokens across 8 surfaces: structural (bloated configs, unused skills), runtime (verbose output, re-reads), behavioral (model misrouting, cache expiry, retry loops).                         | Not specified               | 8-surface optimization       |
+| **context-stats**                    | Live status line + graph dashboard, session export, cross-project reports. Tracks context zone, MI score, token delta, cache activity. Cache keep-warm for Claude's 5-minute TTL.                 | Not specified (monitoring)  | Monitoring + cache keep-warm |
 
 **What they optimize:** context window usage, output verbosity, cache hit rates,
 model routing.
@@ -112,14 +123,14 @@ you from POWER to ARCHITECT+ class."
 
 Tools that record and replay AI coding sessions as visual experiences.
 
-| Tool | What it does | Platforms | Export |
-|------|-------------|-----------|--------|
-| **Recall** | Video-player-style replay. Frame-by-frame playback, timeline scrubber, dead air compression, keyboard shortcuts, full-text search, work units. | Claude Code, Codex, Gemini CLI | Local |
-| **vibe-replay** | Animated, interactive web replays. One self-contained HTML file. Activity heatmaps, project analytics, cost estimates. | Claude Code, Cursor, Codex, Pi | HTML, SVG, GIF, markdown |
-| **claude-replay** | Self-contained embeddable HTML replays. Interactive playback, collapse/expand tool calls and thinking blocks, bookmarks, secret redaction, multiple themes. | Claude Code, Cursor, Codex, Gemini, OpenCode | HTML |
-| **claude-trace-replay** | Trace viewer for Claude Code. Replay sessions, inspect agent flows and tool calls, spot token spikes, compare runs. | Claude Code | Local |
-| **Culpa** | Deterministic replay + counterfactual debugging. Flight recorder capturing every LLM call, tool invocation, file change. Fork at any decision point for "what if" experiments. | AI agents generally | Local |
-| **AgentReel** | "Loom for AI coding sessions." Every session becomes shareable, scrubbable replay. Timeline scrubber, diff viewer, MP4 export with auto-edited highlights. | Claude Code, Cursor | MP4, share URLs |
+| Tool                    | What it does                                                                                                                                                                   | Platforms                                    | Export                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- | ------------------------ |
+| **Recall**              | Video-player-style replay. Frame-by-frame playback, timeline scrubber, dead air compression, keyboard shortcuts, full-text search, work units.                                 | Claude Code, Codex, Gemini CLI               | Local                    |
+| **vibe-replay**         | Animated, interactive web replays. One self-contained HTML file. Activity heatmaps, project analytics, cost estimates.                                                         | Claude Code, Cursor, Codex, Pi               | HTML, SVG, GIF, markdown |
+| **claude-replay**       | Self-contained embeddable HTML replays. Interactive playback, collapse/expand tool calls and thinking blocks, bookmarks, secret redaction, multiple themes.                    | Claude Code, Cursor, Codex, Gemini, OpenCode | HTML                     |
+| **claude-trace-replay** | Trace viewer for Claude Code. Replay sessions, inspect agent flows and tool calls, spot token spikes, compare runs.                                                            | Claude Code                                  | Local                    |
+| **Culpa**               | Deterministic replay + counterfactual debugging. Flight recorder capturing every LLM call, tool invocation, file change. Fork at any decision point for "what if" experiments. | AI agents generally                          | Local                    |
+| **AgentReel**           | "Loom for AI coding sessions." Every session becomes shareable, scrubbable replay. Timeline scrubber, diff viewer, MP4 export with auto-edited highlights.                     | Claude Code, Cursor                          | MP4, share URLs          |
 
 **What they do:** visualize sessions, enable replay, support debugging.
 
@@ -130,13 +141,13 @@ integration. These are visualization tools, not coaching tools.
 
 Tools that track coding activity and provide social/competitive features.
 
-| Tool | What it ranks | Metric | Privacy | Social features |
-|------|---------------|--------|---------|-----------------|
-| **StraVIBE** | Total tokens burned across Claude Code/Codex/Cursor | Token volume (raw count) | Only token counts leave machine | Public leaderboard, Spotify-Wrapped-style shareable cards, auto-sync |
-| **straude** | Total tokens burned | Token volume (raw count) | Only aggregate token usage uploaded | Auto-posts sessions with AI captions, leaderboard |
-| **DevsLOG** | Productivity score, streaks, lines of code | LOC + time | VS Code extension, local | Community sharing, daily/weekly/monthly reports |
-| **Gitrava** | GitHub activity | LOC additions/deletions, contribution calendar | GitHub OAuth | 9:16 PNG summaries for sharing |
-| **KERN** | Developer behavioral intelligence | Activity classification (Coding/Debugging/Testing/DevOps/Research) | Terminal agent captures | Real-time dashboard, AI standups, team blocker intelligence |
+| Tool         | What it ranks                                       | Metric                                                             | Privacy                             | Social features                                                      |
+| ------------ | --------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------- | -------------------------------------------------------------------- |
+| **StraVIBE** | Total tokens burned across Claude Code/Codex/Cursor | Token volume (raw count)                                           | Only token counts leave machine     | Public leaderboard, Spotify-Wrapped-style shareable cards, auto-sync |
+| **straude**  | Total tokens burned                                 | Token volume (raw count)                                           | Only aggregate token usage uploaded | Auto-posts sessions with AI captions, leaderboard                    |
+| **DevsLOG**  | Productivity score, streaks, lines of code          | LOC + time                                                         | VS Code extension, local            | Community sharing, daily/weekly/monthly reports                      |
+| **Gitrava**  | GitHub activity                                     | LOC additions/deletions, contribution calendar                     | GitHub OAuth                        | 9:16 PNG summaries for sharing                                       |
+| **KERN**     | Developer behavioral intelligence                   | Activity classification (Coding/Debugging/Testing/DevOps/Research) | Terminal agent captures             | Real-time dashboard, AI standups, team blocker intelligence          |
 
 **The critical finding — StraVIBE vs SigRank:**
 
@@ -162,12 +173,12 @@ SigRank computes the cascade architecture from their relationships.
 
 Tools that provide real-time or post-hoc feedback on prompt quality.
 
-| Tool | What it does | Approach | When |
-|------|-------------|----------|------|
-| **AI Coach** | Real-time guidance for Claude Code. Hooks into UserPromptSubmit and PostToolUse events. Catches ambiguous prompts and context issues. Decision tree adjusts based on feedback. | Hook-based, real-time | During session |
-| **Prompt Sensei** | Local-first prompt coach for Claude Code and Codex. Stage-aware feedback, rewrites rough prompts, observes prompting habits, analyzes local history with consent. | Local analysis + rewriting | During + post-session |
-| **prompt-coach** | Claude skill that silently analyzes every prompt, scores for token efficiency, shows what to cut, trains better prompting over time. | Silent analysis + scoring | During session |
-| **claude-code-prompt-improver** | Injects right context at right moment (prompt submit, tool use, subagent start) for better first output. | Context injection | During session |
+| Tool                            | What it does                                                                                                                                                                   | Approach                   | When                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- | --------------------- |
+| **AI Coach**                    | Real-time guidance for Claude Code. Hooks into UserPromptSubmit and PostToolUse events. Catches ambiguous prompts and context issues. Decision tree adjusts based on feedback. | Hook-based, real-time      | During session        |
+| **Prompt Sensei**               | Local-first prompt coach for Claude Code and Codex. Stage-aware feedback, rewrites rough prompts, observes prompting habits, analyzes local history with consent.              | Local analysis + rewriting | During + post-session |
+| **prompt-coach**                | Claude skill that silently analyzes every prompt, scores for token efficiency, shows what to cut, trains better prompting over time.                                           | Silent analysis + scoring  | During session        |
+| **claude-code-prompt-improver** | Injects right context at right moment (prompt submit, tool use, subagent start) for better first output.                                                                       | Context injection          | During session        |
 
 **What they coach:** prompt clarity, context management, token efficiency at the
 prompt level.
@@ -185,6 +196,7 @@ Research that exists in academia but hasn't been implemented in coding tools:
 
 **"From Accuracy to Readiness: Metrics and Benchmarks for Human–AI Decision-Making"**
 (arxiv.org/html/2603.18895v1)
+
 - Four-part taxonomy: Outcome metrics, Reliance & Interaction metrics
   (accept-on-wrong, changed-to-wrong, override frequency, reliance slope),
   Safety & Harm metrics, Learning & Readiness metrics
@@ -194,6 +206,7 @@ Research that exists in academia but hasn't been implemented in coding tools:
 
 **Anthropic's "Measuring AI agent autonomy in practice"**
 (anthropic.com/research/measuring-agent-autonomy)
+
 - Analyzed millions of human-agent interactions across Claude Code and public API
 - Key finding: experienced users auto-approve more BUT interrupt more often
 - Measures: autonomy granted, autonomy interrupted, action risk classification
@@ -202,6 +215,7 @@ Research that exists in academia but hasn't been implemented in coding tools:
   behavior.
 
 **CoTrace** (arxiv.org/html/2605.21363v1)
+
 - Framework for measuring human and AI contributions at goal level
 - Models account for 11-26% of goal-shaping contribution
 - **Relevance:** goal-level contribution measurement, not just turn-level
@@ -210,11 +224,13 @@ Research that exists in academia but hasn't been implemented in coding tools:
 
 **"A Course Correction in Steerability Evaluation"**
 (ojs.aaai.org/index.php/AAAI/article/view/41057)
+
 - Multi-dimensional goal space modeling user goals and LLM outputs as vectors
 - Finds current LLMs induce "side-effects" that impede steerability
 
 **"Evaluating the Prompt Steerability of Large Language Models"**
 (arxiv.org/html/2411.12405v1)
+
 - Formal definition of prompt steerability as shifting model's behavioral
   distribution
 - Benchmark reveals limited steerability due to baseline behavior skew
@@ -223,22 +239,26 @@ Research that exists in academia but hasn't been implemented in coding tools:
 
 **"Learning the Preferences of Ignorant, Inconsistent Agents"**
 (doi.org/10.1609/aaai.v30i1.10010)
+
 - Bayesian inverse planning for preference inference from choices
 - Incorporates false beliefs, sub-optimal planning, temporal inconsistency
 
 **"Learning Structured Preferences"**
 (owainevans.github.io/pdfs/learning_structured_preferences_evans.pdf)
+
 - Bayesian inference + utility-based models for learning structured preferences
   from sparse data
 
 ### Industry frameworks
 
 **Human-in-the-Loop Patterns** (ai-solutions.wiki/patterns/human-in-the-loop/)
+
 - Correction rate benchmarks: below 5% = over-reviewing, above 30% = model needs
   improvement
 - Pre-approval gates, confidence-based escalation, post-hoc audit loops
 
 **Agent Patterns Catalog** (agentpatternscatalog.org)
+
 - Classify every agent action by risk/cost and route to different approval
   policies
 - Addresses approval-fatigue and asynchronous approval stalls
@@ -452,16 +472,16 @@ whether interventions were the RIGHT ones, not just how often you accepted.
 
 **ASI dimensions:**
 
-| Dimension | What it measures | How (from logs) | Confidence |
-|-----------|-----------------|-----------------|------------|
-| Acceptance rate | % of turns accepted as-is | Turn classification (current) | High |
-| Correction rate | % of turns corrected | Turn classification (current) | High |
-| Rejection rate | % of turns rejected | Turn classification (current) | High |
-| Correction precision | Of corrections, how many were on files the agent actually got wrong | Infer from error patterns, retry patterns, edit deltas | Medium |
-| Intervention timing | How quickly you intervene (tight vs loose steering) | Timestamp deltas between agent edit and user correction | High |
-| Reliance slope | How your acceptance rate changes over sessions | SE per session over time, trend line | High |
-| Over-correction index | Corrections on files that didn't need correction | Agent's edit followed by successful build/test, but user corrected anyway | Low (needs build/test data) |
-| Under-steering index | Acceptances that led to downstream problems | Accepted an edit, then corrected a related file within 5 turns | Medium |
+| Dimension             | What it measures                                                    | How (from logs)                                                           | Confidence                  |
+| --------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------- |
+| Acceptance rate       | % of turns accepted as-is                                           | Turn classification (current)                                             | High                        |
+| Correction rate       | % of turns corrected                                                | Turn classification (current)                                             | High                        |
+| Rejection rate        | % of turns rejected                                                 | Turn classification (current)                                             | High                        |
+| Correction precision  | Of corrections, how many were on files the agent actually got wrong | Infer from error patterns, retry patterns, edit deltas                    | Medium                      |
+| Intervention timing   | How quickly you intervene (tight vs loose steering)                 | Timestamp deltas between agent edit and user correction                   | High                        |
+| Reliance slope        | How your acceptance rate changes over sessions                      | SE per session over time, trend line                                      | High                        |
+| Over-correction index | Corrections on files that didn't need correction                    | Agent's edit followed by successful build/test, but user corrected anyway | Low (needs build/test data) |
+| Under-steering index  | Acceptances that led to downstream problems                         | Accepted an edit, then corrected a related file within 5 turns            | Medium                      |
 
 **The honest limitation:** we can't measure all of these from logs alone. Some
 require knowing if the code was "correct" — which needs test results, build
@@ -479,6 +499,7 @@ levels. "ASI 0.85 (high confidence — 25,987 turns) · correction precision 0.9
 ### Current state
 
 The current extractor does:
+
 - Layer 1 (metadata): tool distribution, edit style, reject rate → clean, useful
 - Layer 2 (structural): correction loops, convergence, file concentration → clean, useful
 - Layer 3 (content): user feedback directives → NOISY (truncated sentences, typos, stream-of-consciousness)
@@ -567,6 +588,7 @@ performance:
 ### The two surfaces
 
 **Surface 1: Local coach (the operator's daily driver)**
+
 - Reads session logs locally
 - Computes cascade + ASI + taste profile
 - Coaches on steering, token efficiency, cascade improvement
@@ -574,6 +596,7 @@ performance:
 - Everything stays local
 
 **Surface 2: Site agent (the intelligence behind signalaf.com)**
+
 - NOT a chatbot. The brain that makes the site feel alive.
 - Powers operator spotlights ("why MO§ES jumped 3 classes this week")
 - Powers trend analysis ("cache read is becoming the dominant pillar across the
@@ -584,13 +607,13 @@ performance:
 
 ### The line between the two
 
-| | Local signa | Site signa |
-|---|---|---|
-| What it sees | All 3 layers (your logs) | Board data only (4 pillars per snapshot) |
-| Taste profile | Yes (behavioral signature) | No (can't see your behavior) |
-| SE / ASI | Yes (from your turns) | No (no turn data on the board) |
-| Coaching depth | Deep (behavioral + cascade) | Shallow (cascade strategy only) |
-| Privacy | Everything stays local | Your submitted pillars are already public |
+|                | Local signa                 | Site signa                                |
+| -------------- | --------------------------- | ----------------------------------------- |
+| What it sees   | All 3 layers (your logs)    | Board data only (4 pillars per snapshot)  |
+| Taste profile  | Yes (behavioral signature)  | No (can't see your behavior)              |
+| SE / ASI       | Yes (from your turns)       | No (no turn data on the board)            |
+| Coaching depth | Deep (behavioral + cascade) | Shallow (cascade strategy only)           |
+| Privacy        | Everything stays local      | Your submitted pillars are already public |
 
 ### The "plug your own agent in" angle (MCP server mode)
 
@@ -617,6 +640,7 @@ design. Real work, real API costs. Table until budget or demand.
 ### Phase 1: Build now (no LLM needed, pure code)
 
 **1. SE v2 — Appropriate Steering Index (ASI)**
+
 - Reframe SE from acceptance rate to appropriate intervention rate
 - Implement the 8 ASI dimensions from Part 5
 - Report confidence levels honestly
@@ -625,6 +649,7 @@ design. Real work, real API costs. Table until budget or demand.
 - **Why first:** SE is the thing nobody else has. It's the moat within the moat.
 
 **2. Taste profile v2 — behavioral signature**
+
 - Drop Layer 3 content extraction by default (solves noise + privacy)
 - Reframe as behavioral: steering signature, iteration fingerprint, workflow
   rhythm, cascade personality, correction taxonomy
@@ -634,6 +659,7 @@ design. Real work, real API costs. Table until budget or demand.
   The current version has truncated sentence fragments.
 
 **3. The taste → cascade bridge**
+
 - Connect taste profile to cascade coaching
 - "Your [taste dimension] is causing [cascade impact] — here's the fix"
 - This is the coaching nobody else can give
@@ -641,6 +667,7 @@ design. Real work, real API costs. Table until budget or demand.
   more than a calculator.
 
 **4. Documentation — 4 documents**
+
 - Positioning document (internal): what signa is, what it's NOT, the lane
 - User-facing explainer (docs/): what signa does, what it sees, what stays local
 - Marketing copy (docs/): the hook, the positioning, the proof, the ecosystem
@@ -651,6 +678,7 @@ design. Real work, real API costs. Table until budget or demand.
 ### Phase 2: Build next (needs LLM decision)
 
 **5. MCP server mode**
+
 - Expose signa's skills as MCP tools
 - The operator's own agent calls them (Claude Code, Cursor, Windsurf)
 - No API cost for us. No Ollama for them.
@@ -659,6 +687,7 @@ design. Real work, real API costs. Table until budget or demand.
   wrapping as MCP tools is mostly schema work.
 
 **6. LLM wiring**
+
 - Claude API adapter for the REPL (operator brings their own API key)
 - Turns the calculator into a conversational coach
 - The LLM wraps the existing skills — it picks which skill to call and formats
@@ -669,14 +698,14 @@ design. Real work, real API costs. Table until budget or demand.
 ### Phase 3: Tabled (needs precondition)
 
 **7. Standalone hosted agent** — needs server-side LLM + API budget. Table until
-  budget or demand.
+budget or demand.
 
 **8. Events/hackathons** — needs users first. Table.
 
 **9. Session replay** — crowded space, not our lane. Table.
 
 **10. Multi-platform adapters** (Cursor/Codex/Gemini log readers) — important
-  but not urgent. Claude Code operators are the first audience. Table.
+but not urgent. Claude Code operators are the first audience. Table.
 
 ---
 
@@ -698,15 +727,15 @@ those tokens were worth."**
 
 ### The differentiation table
 
-| | Tier 1 (StraVIBE) | Tier 2 (Code Insights etc.) | Tier 3 (signa) |
-|---|---|---|---|
-| What it measures | Token volume | Behavioral patterns | Cascade architecture |
-| The metric | "48.2M tokens" | "45 anti-patterns detected" | "Υ 283.17, SNR 0.522, Leverage 259×" |
-| The insight | None (a count) | Patterns (what you did) | Architecture (what your tokens were worth) |
-| The game | Consumption | Analysis | Compounding |
-| The coaching | None | Anti-pattern detection | Cascade + steering coaching |
-| The leaderboard | Token volume rank | None | Υ Yield rank |
-| Privacy | "Only token counts leave" | Varies | "Only 4 integers leave" |
+|                  | Tier 1 (StraVIBE)         | Tier 2 (Code Insights etc.) | Tier 3 (signa)                             |
+| ---------------- | ------------------------- | --------------------------- | ------------------------------------------ |
+| What it measures | Token volume              | Behavioral patterns         | Cascade architecture                       |
+| The metric       | "48.2M tokens"            | "45 anti-patterns detected" | "Υ 283.17, SNR 0.522, Leverage 259×"       |
+| The insight      | None (a count)            | Patterns (what you did)     | Architecture (what your tokens were worth) |
+| The game         | Consumption               | Analysis                    | Compounding                                |
+| The coaching     | None                      | Anti-pattern detection      | Cascade + steering coaching                |
+| The leaderboard  | Token volume rank         | None                        | Υ Yield rank                               |
+| Privacy          | "Only token counts leave" | Varies                      | "Only 4 integers leave"                    |
 
 ### The ecosystem
 
@@ -729,5 +758,5 @@ specific, actionable, cascade-connected insights — not just counts.
 
 ---
 
-*Research conducted by DEVIN2, 2026-07-07. Landscape scan of 30+ tools across 6
-categories. Companion to RESEARCH_AND_BRAINSTORM.md + PLAN.md + LAUNCH.md.*
+_Research conducted by DEVIN2, 2026-07-07. Landscape scan of 30+ tools across 6
+categories. Companion to RESEARCH_AND_BRAINSTORM.md + PLAN.md + LAUNCH.md._

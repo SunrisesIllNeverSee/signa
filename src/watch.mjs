@@ -6,33 +6,37 @@
  * Notifications print to stdout (the REPL picks them up if running).
  */
 
-import { watch } from 'node:fs'
-import { join } from 'node:path'
-import { homedir } from 'node:os'
-import { existsSync } from 'node:fs'
+import { watch } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
+import { existsSync } from "node:fs";
 
-const DEFAULT_ROOT = join(homedir(), '.claude', 'projects')
+const DEFAULT_ROOT = join(homedir(), ".claude", "projects");
 
 export function startWatch(root, callback, debounceMs = 60_000) {
   if (!existsSync(root)) {
-    console.log(`[watch] root does not exist: ${root}`)
-    return null
+    console.log(`[watch] root does not exist: ${root}`);
+    return null;
   }
-  let timer = null
-  let watcher
+  let timer = null;
+  let watcher;
   try {
     watcher = watch(root, { recursive: true }, (eventType, filename) => {
-      if (!filename || !filename.endsWith('.jsonl')) return
-      if (timer) clearTimeout(timer)
+      if (!filename || !filename.endsWith(".jsonl")) return;
+      if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        timer = null
-        callback().catch(err => console.error(`[watch] error: ${err.message}`))
-      }, debounceMs)
-    })
+        timer = null;
+        callback().catch((err) =>
+          console.error(`[watch] error: ${err.message}`),
+        );
+      }, debounceMs);
+    });
   } catch (err) {
-    console.error(`[watch] failed to start: ${err.message}`)
-    return null
+    console.error(`[watch] failed to start: ${err.message}`);
+    return null;
   }
-  console.log(`[watch] monitoring ${root} (debounce ${debounceMs / 1000}s). Ctrl-C to stop.`)
-  return watcher
+  console.log(
+    `[watch] monitoring ${root} (debounce ${debounceMs / 1000}s). Ctrl-C to stop.`,
+  );
+  return watcher;
 }

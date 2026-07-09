@@ -17,24 +17,24 @@
 
 /** Stub: returns null (signals "no LLM, use skill pattern-matching"). */
 export async function llmRespond(input, ctx) {
-  const settings = ctx?.settings
-  if (settings?.llm === 'claude') {
-    const { llmRespond: claudeRespond } = await import('./claude.mjs')
-    return await claudeRespond(input, ctx)
+  const settings = ctx?.settings;
+  if (settings?.llm === "claude") {
+    const { llmRespond: claudeRespond } = await import("./claude.mjs");
+    return await claudeRespond(input, ctx);
   }
   // if (settings?.llm === 'local') {
   //   const { llmRespond: localRespond } = await import('./local.mjs')
   //   return await localRespond(input, ctx)
   // }
-  return null // stub mode — no LLM, use pattern-matching
+  return null; // stub mode — no LLM, use pattern-matching
 }
 
 /** Check if a real LLM is configured. */
 export function hasLLM(settings) {
-  if (!settings || !settings.llm || settings.llm === 'stub') return false
-  if (settings.llm === 'claude') {
-    const apiKey = settings.llmApiKey || process.env.ANTHROPIC_API_KEY
-    return !!apiKey
+  if (!settings || !settings.llm || settings.llm === "stub") return false;
+  if (settings.llm === "claude") {
+    const apiKey = settings.llmApiKey || process.env.ANTHROPIC_API_KEY;
+    return !!apiKey;
   }
-  return false
+  return false;
 }

@@ -21,11 +21,11 @@ Everything stays local. Nothing leaves your machine.
 
 signa is one of three pieces:
 
-| Repo | What it is | Install |
-|------|-----------|---------|
-| **[sigrank-mcp](https://github.com/SunrisesIllNeverSee/sigrank-mcp)** | The instrument — extracts 4 token pillars, computes the cascade, submits to the leaderboard. MCP server + TUI dashboard. | `npx sigrank` |
-| **[sigrank-app](https://github.com/SunrisesIllNeverSee/sigrank-app)** | The leaderboard — signalaf.com. Privacy-preserving operator profiles, class tiers, board rankings. | [signalaf.com](https://signalaf.com) |
-| **[signa](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `git clone` + `npm link` |
+| Repo                                                                  | What it is                                                                                                                              | Install                              |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **[sigrank-mcp](https://github.com/SunrisesIllNeverSee/sigrank-mcp)** | The instrument — extracts 4 token pillars, computes the cascade, submits to the leaderboard. MCP server + TUI dashboard.                | `npx sigrank`                        |
+| **[sigrank-app](https://github.com/SunrisesIllNeverSee/sigrank-app)** | The leaderboard — signalaf.com. Privacy-preserving operator profiles, class tiers, board rankings.                                      | [signalaf.com](https://signalaf.com) |
+| **[signa](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `git clone` + `npm link`             |
 
 **sigrank-mcp** is the calorie counter. **signa** is the metabolic panel.
 
@@ -60,6 +60,7 @@ signa is one of three pieces:
 - **Layer 3 (content):** user feedback directives — distilled into preferences, not retained (opt-in)
 
 From these layers it computes:
+
 - The **cascade** (Υ, SNR, Leverage, Velocity, class) — the efficiency metrics
 - **Appropriate Steering Index (ASI)** — 8 dimensions measuring whether your interventions were the RIGHT ones, not just how often you accepted
 - A **behavioral taste profile** — 5 dimensions: steering signature, iteration fingerprint, workflow rhythm, cascade personality, correction taxonomy
@@ -169,20 +170,20 @@ When enabled, signa sends only computed **metrics** (class, yield, pillars, ASI 
 }
 ```
 
-| MCP tool | What it does |
-|----------|-------------|
-| `signa_scan` | Read logs, compute cascade + ASI + taste |
-| `signa_diagnose` | Pillar-level audit + issue detection |
+| MCP tool         | What it does                               |
+| ---------------- | ------------------------------------------ |
+| `signa_scan`     | Read logs, compute cascade + ASI + taste   |
+| `signa_diagnose` | Pillar-level audit + issue detection       |
 | `signa_simulate` | Project Υ/class delta from a pillar change |
-| `signa_suggest` | Ranked recommendations with impact |
-| `signa_taste` | 5-dimension behavioral taste profile |
-| `signa_asi` | 8-dimension Appropriate Steering Index |
-| `signa_bridge` | Taste → cascade coaching insights |
-| `signa_cost` | Token-to-cost analysis + cache savings |
-| `signa_goal` | Path to a target class |
-| `signa_compare` | Head-to-head vs class benchmark |
-| `signa_track` | Metrics over time from history |
-| `signa_anomaly` | Detect metric drops |
+| `signa_suggest`  | Ranked recommendations with impact         |
+| `signa_taste`    | 5-dimension behavioral taste profile       |
+| `signa_asi`      | 8-dimension Appropriate Steering Index     |
+| `signa_bridge`   | Taste → cascade coaching insights          |
+| `signa_cost`     | Token-to-cost analysis + cache savings     |
+| `signa_goal`     | Path to a target class                     |
+| `signa_compare`  | Head-to-head vs class benchmark            |
+| `signa_track`    | Metrics over time from history             |
+| `signa_anomaly`  | Detect metric drops                        |
 
 Context is cached for 60 seconds to avoid re-reading logs on every tool call. All data stays local.
 
@@ -190,22 +191,22 @@ Context is cached for 60 seconds to avoid re-reading logs on every tool call. Al
 
 ## Skills
 
-| Skill | Trigger | What it does |
-|-------|---------|-------------|
-| `scan` | "scan", "refresh" | Read logs, compute cascade + ASI + taste profile, save to history |
-| `diagnose` | "how am I doing", "audit" | Pillar-level audit: which pillar is weak, why |
-| `simulate` | "simulate", "what if" | Project Υ/class delta from a hypothetical pillar change |
-| `suggest` | "suggest", "what should I do" | Ranked recommendations with simulated impact |
-| `track` | "track", "am I improving" | Metrics over time from local history |
-| `taste` | "taste", "profile" | Show your behavioral taste profile (5 dimensions) |
-| `asi` | "asi", "steering" | Show your Appropriate Steering Index (8 dimensions) |
-| `bridge` | "bridge", "connect" | Taste → cascade coaching insights |
-| `goal` | "goal", "how do I hit" | Path to a target class (TRANSMITTER, ARCHITECT, etc.) |
-| `cost` | "cost", "how much" | Token-to-cost analysis (Claude pricing) |
-| `anomaly` | "anomaly", "did anything drop" | Detect metric drops, pinpoint when |
-| `self-improve` | "self-improve", "coach" | Full cycle: diagnose → suggest → simulate → next actions |
-| `compare` | "compare", "vs" | Head-to-head vs class average |
-| `watch` | "watch", "daemon" | Background daemon: auto-scan on .jsonl changes |
+| Skill          | Trigger                        | What it does                                                      |
+| -------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `scan`         | "scan", "refresh"              | Read logs, compute cascade + ASI + taste profile, save to history |
+| `diagnose`     | "how am I doing", "audit"      | Pillar-level audit: which pillar is weak, why                     |
+| `simulate`     | "simulate", "what if"          | Project Υ/class delta from a hypothetical pillar change           |
+| `suggest`      | "suggest", "what should I do"  | Ranked recommendations with simulated impact                      |
+| `track`        | "track", "am I improving"      | Metrics over time from local history                              |
+| `taste`        | "taste", "profile"             | Show your behavioral taste profile (5 dimensions)                 |
+| `asi`          | "asi", "steering"              | Show your Appropriate Steering Index (8 dimensions)               |
+| `bridge`       | "bridge", "connect"            | Taste → cascade coaching insights                                 |
+| `goal`         | "goal", "how do I hit"         | Path to a target class (TRANSMITTER, ARCHITECT, etc.)             |
+| `cost`         | "cost", "how much"             | Token-to-cost analysis (Claude pricing)                           |
+| `anomaly`      | "anomaly", "did anything drop" | Detect metric drops, pinpoint when                                |
+| `self-improve` | "self-improve", "coach"        | Full cycle: diagnose → suggest → simulate → next actions          |
+| `compare`      | "compare", "vs"                | Head-to-head vs class average                                     |
+| `watch`        | "watch", "daemon"              | Background daemon: auto-scan on .jsonl changes                    |
 
 ---
 
@@ -251,6 +252,7 @@ The profile is **operator-owned**: you can read it, edit it, share it, or delete
 The bridge connects your behavioral taste profile to your cascade performance, generating coaching insights unique to SigRank. No other tool can do this — it requires both the taste profile AND the cascade formula.
 
 Example insights:
+
 - **"Bash-heavy workflow"** (high severity) — you run a lot of Bash commands, which tend to reset context. Impact: lower cache reads → lower leverage → lower Υ. Recommendation: batch your commands.
 - **"Diverging file loops"** (high severity) — you're iterating on files without converging. Impact: high input, low output per turn. Recommendation: stop the loop and give explicit taste guidance.
 - **"Output-light personality"** (high severity) — your output-to-input ratio is low. Impact: low velocity → low Υ. Recommendation: ask the agent for complete implementations, not pieces.

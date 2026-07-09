@@ -26,52 +26,73 @@
  *   5. Skill output is formatted conversationally by the LLM
  */
 
-import { skillDiagnose, skillSimulate, skillSuggest, skillTrack,
-  skillTaste, skillGoal, skillCost, skillAnomaly, skillSelfImprove, skillCompare,
-} from '../skills/index.mjs'
-import { tasteCascadeBridge, formatBridgeReport } from '../taste/bridge.mjs'
-import { appropriateSteeringIndex } from '../taste/se.mjs'
+import {
+  skillDiagnose,
+  skillSimulate,
+  skillSuggest,
+  skillTrack,
+  skillTaste,
+  skillGoal,
+  skillCost,
+  skillAnomaly,
+  skillSelfImprove,
+  skillCompare,
+} from "../skills/index.mjs";
+import { tasteCascadeBridge, formatBridgeReport } from "../taste/bridge.mjs";
+import { appropriateSteeringIndex } from "../taste/se.mjs";
 
-const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages'
-const CLAUDE_MODEL = 'claude-sonnet-4-5-20250514' // cost-effective for coaching
-const API_VERSION = '2023-06-01'
+const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
+const CLAUDE_MODEL = "claude-sonnet-4-5-20250514"; // cost-effective for coaching
+const API_VERSION = "2023-06-01";
 
 /** Check if Claude LLM is configured. */
 export function hasLLM(settings) {
-  if (!settings || !settings.llm || settings.llm === 'stub') return false
-  if (settings.llm === 'claude') return true
+  if (!settings || !settings.llm || settings.llm === "stub") return false;
+  if (settings.llm === "claude") return true;
   // Also check env var directly
-  return !!getApiKey(settings)
+  return !!getApiKey(settings);
 }
 
 /** Get the API key from settings or env. */
 function getApiKey(settings) {
-  return settings?.llmApiKey || process.env.ANTHROPIC_API_KEY || null
+  return settings?.llmApiKey || process.env.ANTHROPIC_API_KEY || null;
 }
 
 /** Build a context summary for the LLM (no raw logs, no code, no message content). */
 function buildContextSummary(ctx) {
-  const { cas, se, asi, taste, profile, settings } = ctx
-  const parts = []
+  const { cas, se, asi, taste, profile, settings } = ctx;
+  const parts = [];
 
   if (cas) {
-    parts.push(`CASCADE: class=${cas.class}, yield=${cas.yield}, snr=${cas.snr}, leverage=${cas.leverage}, velocity=${cas.velocity}`)
-    parts.push(`PILLARS: input=${cas.pillars.input}, output=${cas.pillars.output}, cacheCreate=${cas.pillars.cacheCreate}, cacheRead=${cas.pillars.cacheRead}`)
+    parts.push(
+      `CASCADE: class=${cas.class}, yield=${cas.yield}, snr=${cas.snr}, leverage=${cas.leverage}, velocity=${cas.velocity}`,
+    );
+    parts.push(
+      `PILLARS: input=${cas.pillars.input}, output=${cas.pillars.output}, cacheCreate=${cas.pillars.cacheCreate}, cacheRead=${cas.pillars.cacheRead}`,
+    );
   }
   if (se) {
-    parts.push(`STEERING: SE=${se.se}, acceptanceRate=${se.acceptanceRate}, correctionRate=${se.correctionRate}, rejectionRate=${se.rejectionRate}`)
+    parts.push(
+      `STEERING: SE=${se.se}, acceptanceRate=${se.acceptanceRate}, correctionRate=${se.correctionRate}, rejectionRate=${se.rejectionRate}`,
+    );
   }
   if (asi) {
-    parts.push(`ASI: composite=${asi.asi}, timing=${asi.dimensions?.interventionTiming?.label}, reliance=${asi.dimensions?.relianceSlope?.trend}, overCorrection=${asi.dimensions?.overCorrectionIndex?.value}, underSteering=${asi.dimensions?.underSteeringIndex?.value}`)
+    parts.push(
+      `ASI: composite=${asi.asi}, timing=${asi.dimensions?.interventionTiming?.label}, reliance=${asi.dimensions?.relianceSlope?.trend}, overCorrection=${asi.dimensions?.overCorrectionIndex?.value}, underSteering=${asi.dimensions?.underSteeringIndex?.value}`,
+    );
   }
   if (taste) {
-    parts.push(`TASTE: concentration=${taste.iterationConcentration}, workflow=${taste.workflowRhythm?.style}, personality=${taste.cascadePersonality?.types?.join(',')}`)
+    parts.push(
+      `TASTE: concentration=${taste.iterationConcentration}, workflow=${taste.workflowRhythm?.style}, personality=${taste.cascadePersonality?.types?.join(",")}`,
+    );
     if (taste.correctionTaxonomy?.length > 0) {
-      parts.push(`CORRECTION_TAXONOMY: ${taste.correctionTaxonomy.map(t => `${t.category}(${t.totalLoops} loops)`).join(', ')}`)
+      parts.push(
+        `CORRECTION_TAXONOMY: ${taste.correctionTaxonomy.map((t) => `${t.category}(${t.totalLoops} loops)`).join(", ")}`,
+      );
     }
   }
 
-  return parts.join('\n')
+  return parts.join("\n");
 }
 
 /** Build the system prompt for the LLM. */
@@ -103,108 +124,123 @@ Available skills you can reference:
 The operator's current context:
 ${buildContextSummary(ctx)}
 
-Keep responses under 200 words unless they ask for detail. Use their actual numbers, not generic advice.`
+Keep responses under 200 words unless they ask for detail. Use their actual numbers, not generic advice.`;
 }
 
 /** Call the Claude API. */
 async function callClaude(apiKey, systemPrompt, userMessage) {
   const response = await fetch(CLAUDE_API_URL, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': API_VERSION,
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": API_VERSION,
     },
     body: JSON.stringify({
       model: CLAUDE_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
+      messages: [{ role: "user", content: userMessage }],
     }),
-  })
+  });
 
   if (!response.ok) {
-    const errText = await response.text()
-    throw new Error(`Claude API error ${response.status}: ${errText}`)
+    const errText = await response.text();
+    throw new Error(`Claude API error ${response.status}: ${errText}`);
   }
 
-  const data = await response.json()
-  const text = data?.content?.[0]?.text
-  if (!text) throw new Error('Claude API returned no text content')
-  return text
+  const data = await response.json();
+  const text = data?.content?.[0]?.text;
+  if (!text) throw new Error("Claude API returned no text content");
+  return text;
 }
 
 /** Main entry: respond to user input using the LLM. */
 export async function llmRespond(input, ctx) {
-  const apiKey = getApiKey(ctx.settings)
+  const apiKey = getApiKey(ctx.settings);
   if (!apiKey) {
-    return null // no API key, fall back to pattern-matching
+    return null; // no API key, fall back to pattern-matching
   }
 
-  const systemPrompt = buildSystemPrompt(ctx)
+  const systemPrompt = buildSystemPrompt(ctx);
 
   // Check if the input matches a skill we can call directly
-  const skillMatch = matchSkillForLLM(input)
-  let skillOutput = null
+  const skillMatch = matchSkillForLLM(input);
+  let skillOutput = null;
   if (skillMatch) {
     try {
-      skillOutput = await runSkill(skillMatch, ctx)
+      skillOutput = await runSkill(skillMatch, ctx);
     } catch (e) {
       // Skill failed — let the LLM handle it without skill output
     }
   }
 
   // Build the user message: include the skill output if we have it
-  let userMessage = input
+  let userMessage = input;
   if (skillOutput) {
-    userMessage = `User asked: "${input}"\n\nHere is the raw skill output:\n\n${skillOutput}\n\nPlease format this conversationally and add any insight from the numbers.`
+    userMessage = `User asked: "${input}"\n\nHere is the raw skill output:\n\n${skillOutput}\n\nPlease format this conversationally and add any insight from the numbers.`;
   }
 
-  return await callClaude(apiKey, systemPrompt, userMessage)
+  return await callClaude(apiKey, systemPrompt, userMessage);
 }
 
 /** Match input to a skill (for LLM-assisted calls). */
 function matchSkillForLLM(input) {
-  const lower = input.toLowerCase().trim()
-  if (/how am i|how's it going|status|diagnose|audit/.test(lower)) return 'diagnose'
-  if (/what should|recommend|suggest|improve|better|next/.test(lower)) return 'suggest'
-  if (/taste|preference|style|my profile/.test(lower)) return 'taste'
-  if (/steering|asi|how well do i steer/.test(lower)) return 'asi'
-  if (/bridge|connect|behavior.*cascade|taste.*cascade/.test(lower)) return 'bridge'
-  if (/cost|spend|dollar|money|price/.test(lower)) return 'cost'
-  if (/trend|history|over time|improving|declining|track/.test(lower)) return 'track'
-  if (/anomaly|drop|weird|did anything/.test(lower)) return 'anomaly'
-  if (/compare|vs|versus|benchmark/.test(lower)) return 'compare'
-  if (/simulat|what if|project/.test(lower)) return 'simulate'
-  if (/goal|target|how do i hit|reach/.test(lower)) return 'goal'
-  if (/self.improve|coach|full cycle/.test(lower)) return 'self-improve'
-  return null
+  const lower = input.toLowerCase().trim();
+  if (/how am i|how's it going|status|diagnose|audit/.test(lower))
+    return "diagnose";
+  if (/what should|recommend|suggest|improve|better|next/.test(lower))
+    return "suggest";
+  if (/taste|preference|style|my profile/.test(lower)) return "taste";
+  if (/steering|asi|how well do i steer/.test(lower)) return "asi";
+  if (/bridge|connect|behavior.*cascade|taste.*cascade/.test(lower))
+    return "bridge";
+  if (/cost|spend|dollar|money|price/.test(lower)) return "cost";
+  if (/trend|history|over time|improving|declining|track/.test(lower))
+    return "track";
+  if (/anomaly|drop|weird|did anything/.test(lower)) return "anomaly";
+  if (/compare|vs|versus|benchmark/.test(lower)) return "compare";
+  if (/simulat|what if|project/.test(lower)) return "simulate";
+  if (/goal|target|how do i hit|reach/.test(lower)) return "goal";
+  if (/self.improve|coach|full cycle/.test(lower)) return "self-improve";
+  return null;
 }
 
 /** Run a skill and return its output. */
 async function runSkill(name, ctx) {
   switch (name) {
-    case 'diagnose': return await skillDiagnose(ctx)
-    case 'suggest': return await skillSuggest(ctx)
-    case 'taste': return await skillTaste(ctx)
-    case 'asi': {
-      const asi = appropriateSteeringIndex(ctx.agg || ctx)
-      return JSON.stringify(asi, null, 2)
+    case "diagnose":
+      return await skillDiagnose(ctx);
+    case "suggest":
+      return await skillSuggest(ctx);
+    case "taste":
+      return await skillTaste(ctx);
+    case "asi": {
+      const asi = appropriateSteeringIndex(ctx.agg || ctx);
+      return JSON.stringify(asi, null, 2);
     }
-    case 'bridge': {
-      if (!ctx.taste) return 'No taste profile available. Run scan first.'
-      const insights = tasteCascadeBridge(ctx.taste, ctx.cas)
-      return formatBridgeReport(insights)
+    case "bridge": {
+      if (!ctx.taste) return "No taste profile available. Run scan first.";
+      const insights = tasteCascadeBridge(ctx.taste, ctx.cas);
+      return formatBridgeReport(insights);
     }
-    case 'cost': return await skillCost(ctx)
-    case 'track': return await skillTrack(ctx)
-    case 'anomaly': return await skillAnomaly(ctx)
-    case 'compare': return await skillCompare(ctx, '')
-    case 'simulate': return await skillSimulate(ctx, '')
-    case 'goal': return await skillGoal(ctx, '')
-    case 'self-improve': return await skillSelfImprove(ctx)
-    default: return null
+    case "cost":
+      return await skillCost(ctx);
+    case "track":
+      return await skillTrack(ctx);
+    case "anomaly":
+      return await skillAnomaly(ctx);
+    case "compare":
+      return await skillCompare(ctx, "");
+    case "simulate":
+      return await skillSimulate(ctx, "");
+    case "goal":
+      return await skillGoal(ctx, "");
+    case "self-improve":
+      return await skillSelfImprove(ctx);
+    default:
+      return null;
   }
 }
 
-export { buildContextSummary, buildSystemPrompt }
+export { buildContextSummary, buildSystemPrompt };

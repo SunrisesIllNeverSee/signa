@@ -12,5 +12,5 @@ export async function localRespond(input, ctx) {
   // The call would be:
   //   POST http://localhost:11434/api/chat
   //   with the skill outputs as system context + the user's question
-  return '[Local LLM adapter is stubbed — install Ollama and wire the API call to enable]'
+  return "[Local LLM adapter is stubbed — install Ollama and wire the API call to enable]";
 }

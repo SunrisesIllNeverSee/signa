@@ -22,11 +22,11 @@ data that only SigRank has.
 
 ## The three-tier analogy
 
-| Tier | Tool | What it tells you | Analogy |
-|------|------|-------------------|---------|
-| Tier 1 | StraVIBE | "You burned 48.2M tokens" | Calorie counter |
-| Tier 2 | Code Insights, taste-ai | "Your tool distribution is Bash-heavy" | Nutrition diary |
-| Tier 3 | signa | "Your leverage is 259×, velocity 1.09, you're POWER class, and your steering is costing you 19.43M in missing output" | Metabolic panel |
+| Tier   | Tool                    | What it tells you                                                                                                     | Analogy         |
+| ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------- |
+| Tier 1 | StraVIBE                | "You burned 48.2M tokens"                                                                                             | Calorie counter |
+| Tier 2 | Code Insights, taste-ai | "Your tool distribution is Bash-heavy"                                                                                | Nutrition diary |
+| Tier 3 | signa                   | "Your leverage is 259×, velocity 1.09, you're POWER class, and your steering is costing you 19.43M in missing output" | Metabolic panel |
 
 ## The hooks
 
@@ -100,21 +100,20 @@ sigrank-mcp (instrument)  →  signalaf.com (leaderboard)  ←  signa (coach)
 
 Smoke-tested against 500 real Claude Code sessions:
 
-| Metric | Value |
-|--------|-------|
-| Sessions analyzed | 500 |
-| Total tool uses | 14,163 |
-| Total edits | 1,836 |
-| Class | POWER |
-| Υ Yield | 283.17 |
-| SE (v1) | 0.99 |
-| ASI (v2) | 0.686 |
-| Cache leverage | 259.3× |
-| Cache savings | $13,314.73 |
-| Total cost (30d) | $3,049.28 |
+| Metric            | Value      |
+| ----------------- | ---------- |
+| Sessions analyzed | 500        |
+| Total tool uses   | 14,163     |
+| Total edits       | 1,836      |
+| Class             | POWER      |
+| Υ Yield           | 283.17     |
+| SE (v1)           | 0.99       |
+| ASI (v2)          | 0.686      |
+| Cache leverage    | 259.3×     |
+| Cache savings     | $13,314.73 |
+| Total cost (30d)  | $3,049.28  |
 
-**The coaching insight from the smoke test:** "Your SE is 0.99 but your Υ is
-283. You steer well but you're not compounding. Increase output by 19.43M →
+**The coaching insight from the smoke test:** "Your SE is 0.99 but your Υ is 283. You steer well but you're not compounding. Increase output by 19.43M →
 Υ 518 (83% gain). Push the agent to produce more, not to accept more."
 
 This is the kind of insight no other tool can give — it requires both the

@@ -2,7 +2,18 @@
 type: brainstorm
 title: signa — fresh R&D + brainstorm (2026-07-07)
 description: Honest competitive landscape analysis + fresh brainstorm for signa's identity, SE refinement, taste profiling approach, and position as "the agent of the product." Reckons with the reality that the session-analysis/taste-profiling/token-coaching space is crowded. Identifies what's genuinely novel vs me-too. Built by DEVIN2.
-tags: [sigrank, signa, brainstorm, r&d, competitive-landscape, steering-efficiency, taste, agent-of-product, documentation]
+tags:
+  [
+    sigrank,
+    signa,
+    brainstorm,
+    r&d,
+    competitive-landscape,
+    steering-efficiency,
+    taste,
+    agent-of-product,
+    documentation,
+  ]
 timestamp: 2026-07-07T08:30:00Z
 ---
 
@@ -48,6 +59,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 ### The crowded fields (Tier 2 — not our competition)
 
 **Session analysis tools (10+):**
+
 - Code Insights — CLI, parses Claude Code/Cursor/Codex/Copilot sessions into SQLite, AI-powered insights, weekly synthesis
 - Microsoft AI Engineer Coach — VS Code extension, 45 anti-patterns, reads local session logs
 - claude-code-devtools — live tool-call timeline, context inspector, file heatmap, replay scrubber
@@ -57,6 +69,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 - cursor-session-tracer — MCP observability layer for Cursor
 
 **Taste/preference profiling tools (6+):**
+
 - Command Code Taste — Meta neuro-symbolic "taste-1" model, continuous RL, learns from every accept/reject/edit
 - taste-ai — zero-config auto-learner, compresses context from 56K→1.9K, extracts patterns from git/session logs
 - Taster — teach AI your taste by showing examples, reverse-engineers standards
@@ -65,6 +78,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 - gitstyle — generates personal engineering style wiki from GitHub commit history
 
 **Token optimization tools (5+):**
+
 - TokenPilot — MCP server, AST-aware structural reading, 90% context reduction
 - token-diet — always-on token-efficiency skill, ~31% lower bill
 - token-optimizer — filters noisy command output, 60-75% reduction
@@ -72,6 +86,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 - context-stats — live status line, cache keep-warm, MI score
 
 **Session replay tools (6+):**
+
 - Recall — video-player-style replay, 100% local, works with Claude Code/Codex/Gemini
 - vibe-replay — animated web replays, one self-contained HTML file, export to MP4/GIF
 - claude-replay — self-contained embeddable HTML replays
@@ -80,6 +95,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 - AgentReel — "Loom for AI coding sessions," shareable scrubbable replays
 
 **"Strava for coding" tools (5+):**
+
 - StraVIBE — tracks every token burned across Claude Code/Codex/Cursor, public leaderboard
 - straude — Strava for Claude Code/Codex, auto-posts sessions with AI captions
 - DevsLOG — VS Code extension, productivity score, streaks, community
@@ -87,6 +103,7 @@ RESEARCH_REPORT_LANDSCAPE_SCAN.md.
 - KERN — developer behavioral intelligence, terminal agent, AI standups
 
 **Prompt coaching tools (4+):**
+
 - AI Coach — real-time guidance, hooks into UserPromptSubmit/PostToolUse
 - Prompt Sensei — local-first prompt coach, stage-aware feedback, rewrites prompts
 - prompt-coach — scores prompts for token efficiency, trains better prompting
@@ -171,6 +188,7 @@ StraVIBE has a token leaderboard. But it's a token-COUNT leaderboard — who bur
 The current SE (accepted=1.0, corrected=0.5, rejected=0.0, weighted average) is a starting point, not a finished metric. The academic research gives us much richer vocabulary:
 
 **From "From Accuracy to Readiness":**
+
 - **Accept-on-wrong** — accepting incorrect AI output (false positive)
 - **Changed-to-wrong** — changing correct AI output (false negative)
 - **Override frequency** — how often you override the agent
@@ -178,11 +196,13 @@ The current SE (accepted=1.0, corrected=0.5, rejected=0.0, weighted average) is 
 - **Appropriate reliance rate** — relying on the agent when you should, overriding when you should
 
 **From Anthropic's autonomy research:**
+
 - **Autonomy granted** — how much you let the agent do without intervention
 - **Autonomy interrupted** — how often you step in
 - **Key finding:** experienced users auto-approve more BUT interrupt more often. This means SE isn't linear — the best operators grant more autonomy AND interrupt more precisely.
 
 **From the HITL patterns:**
+
 - **Correction rate benchmarks:** below 5% = over-reviewing, above 30% = model needs improvement. Your SE is 0.99 (correction rate 0.7%) — this might indicate over-acceptance, not excellent steering.
 
 ### The reframe: SE should measure appropriateness, not just acceptance
@@ -193,14 +213,15 @@ The current SE rewards acceptance. But accepting everything isn't good steering 
 
 Instead of "how often did you accept," measure "how often did you make the RIGHT intervention":
 
-| Situation | Right intervention | Wrong intervention |
-|-----------|-------------------|-------------------|
-| Agent output is correct | Accept (1.0) | Correct/reject (over-correction, 0.3) |
-| Agent output is wrong | Correct/reject (0.5-1.0) | Accept (under-steering, 0.0) |
-| Agent output is taste-mismatched | Correct (0.7) | Accept (taste-blind, 0.3) |
-| Agent output is taste-matched | Accept (1.0) | Correct (over-steering, 0.3) |
+| Situation                        | Right intervention       | Wrong intervention                    |
+| -------------------------------- | ------------------------ | ------------------------------------- |
+| Agent output is correct          | Accept (1.0)             | Correct/reject (over-correction, 0.3) |
+| Agent output is wrong            | Correct/reject (0.5-1.0) | Accept (under-steering, 0.0)          |
+| Agent output is taste-mismatched | Correct (0.7)            | Accept (taste-blind, 0.3)             |
+| Agent output is taste-matched    | Accept (1.0)             | Correct (over-steering, 0.3)          |
 
 The problem: we can't always tell if agent output was "correct" vs "wrong" from the logs alone. But we CAN infer:
+
 - If the agent edited a file and the user never touched it again → likely correct (accepted)
 - If the agent edited a file and the user re-edited it within 2 turns → likely wrong (corrected)
 - If the user rejected the tool use → likely wrong (rejected)
@@ -235,6 +256,7 @@ We can't measure all of these from logs alone. Some require knowing if the code 
 ### The current taste profile is metadata + noisy content extraction
 
 The current extractor does:
+
 - Layer 1 (metadata): tool distribution, edit style, reject rate → clean, useful
 - Layer 2 (structural): correction loops, convergence, file concentration → clean, useful
 - Layer 3 (content): user feedback directives → NOISY (truncated sentences, typos, stream-of-consciousness)
@@ -292,6 +314,7 @@ This is the thing nobody else has. The taste profile should directly explain cas
 ### The two surfaces
 
 **Surface 1: Local coach (the operator's daily driver)**
+
 - Reads your session logs
 - Computes your cascade + SE + taste profile
 - Coaches you on steering, token efficiency, cascade improvement
@@ -299,6 +322,7 @@ This is the thing nobody else has. The taste profile should directly explain cas
 - Everything stays local
 
 **Surface 2: Site agent (the intelligence behind signalaf.com)**
+
 - NOT a chatbot. The brain that makes the site feel alive.
 - Powers operator spotlights ("why MO§ES jumped 3 classes this week")
 - Powers trend analysis ("cache read is becoming the dominant pillar across the board")
@@ -307,14 +331,14 @@ This is the thing nobody else has. The taste profile should directly explain cas
 
 ### The line between the two
 
-| | Local signa | Site signa |
-|---|---|---|
-| **What it sees** | All 3 layers (your logs) | Board data only (4 pillars per snapshot) |
-| **Taste profile** | Yes (behavioral signature) | No (can't see your behavior) |
-| **SE** | Yes (from your turns) | No (no turn data on the board) |
-| **Coaching depth** | Deep (behavioral + cascade) | Shallow (cascade strategy only) |
-| **Privacy** | Everything stays local | Your submitted pillars are already public |
-| **The relationship** | Your daily driver | The site's intelligence |
+|                      | Local signa                 | Site signa                                |
+| -------------------- | --------------------------- | ----------------------------------------- |
+| **What it sees**     | All 3 layers (your logs)    | Board data only (4 pillars per snapshot)  |
+| **Taste profile**    | Yes (behavioral signature)  | No (can't see your behavior)              |
+| **SE**               | Yes (from your turns)       | No (no turn data on the board)            |
+| **Coaching depth**   | Deep (behavioral + cascade) | Shallow (cascade strategy only)           |
+| **Privacy**          | Everything stays local      | Your submitted pillars are already public |
+| **The relationship** | Your daily driver           | The site's intelligence                   |
 
 ### The "plug your own agent in" angle
 
@@ -347,12 +371,14 @@ If budget weren't the constraint, the standalone hosted signa would be:
 ### What needs to exist
 
 **1. The positioning document (internal)**
+
 - What signa is (the coach that connects your behavior to your cascade rank)
 - What signa is NOT (not a session replay tool, not a prompt coach, not a token optimizer, not a Strava-for-coding social tool)
 - The lane: behavioral coaching → cascade improvement → leaderboard competition
 - The differentiation: SE (nobody else measures it), taste→cascade bridge (nobody else connects them), two-tool architecture (coach + instrument)
 
 **2. The user-facing explainer (docs/)**
+
 - "What is signa?" — one paragraph, plain language
 - "How it works" — the 3 layers, the cascade, the SE, the taste profile — explained without jargon
 - "What it sees" — honest about what signa reads from your logs
@@ -362,6 +388,7 @@ If budget weren't the constraint, the standalone hosted signa would be:
 - "The taste profile" — what it captures, what it doesn't, how to use it
 
 **3. The marketing copy (docs/)**
+
 - The hook: "Every other tool measures the agent. signa measures you."
 - The positioning: not analytics, not optimization — coaching
 - The proof: smoke-tested against 500 real sessions, SE 0.99, $13K cache savings, Υ 283 → 518 with one adjustment
@@ -369,6 +396,7 @@ If budget weren't the constraint, the standalone hosted signa would be:
 - The audience: AI coding operators who want to get better, not just measure
 
 **4. The competitive landscape doc (internal, for positioning)**
+
 - The 30+ tools in the space, what each does, where signa's lane is
 - The "what we don't compete on" list (session replay, prompt coaching, token optimization, social sharing)
 - The "what's ours" list (SE, taste→cascade bridge, two-tool architecture, leaderboard ecosystem)
@@ -407,12 +435,14 @@ If budget weren't the constraint, the standalone hosted signa would be:
 **The space is crowded.** 30+ tools do parts of what signa does. Session analysis, taste profiling, token optimization, session replay, prompt coaching, Strava-for-coding — all have multiple players.
 
 **What's genuinely ours:**
+
 1. **Steering Efficiency** — nobody measures how well the human steers. The academic research has the vocabulary but no coding tool implements it. signa has a working (if simple) version. SE v2 (ASI) makes it real.
 2. **Taste → cascade bridge** — nobody connects behavioral taste to cascade metrics. signa can say "your steering costs you X tokens, your iteration pattern costs you Y Υ."
 3. **Two-tool architecture** — coach (local, reads everything) + instrument (extracts 4 integers, submits to board). The privacy boundary IS the product design.
 4. **Leaderboard ecosystem** — the coaching is connected to the competition. You coach toward better Υ, which is the leaderboard metric.
 
 **What's NOT ours (and shouldn't be):**
+
 - Session replay (Recall, vibe-replay own this)
 - Prompt coaching (AI Coach, Prompt Sensei own this)
 - Token optimization (TokenPilot, token-diet own this)
@@ -425,4 +455,4 @@ If budget weren't the constraint, the standalone hosted signa would be:
 
 ---
 
-*Built by DEVIN2, 2026-07-07. Fresh R&D after landscape scan of 30+ tools. Companion to PLAN.md + LAUNCH.md. Supersedes PLAN_TASTE_SE_RESEARCH.md (which was bug-fix scoped; this is the broader reframe).*
+_Built by DEVIN2, 2026-07-07. Fresh R&D after landscape scan of 30+ tools. Companion to PLAN.md + LAUNCH.md. Supersedes PLAN_TASTE_SE_RESEARCH.md (which was bug-fix scoped; this is the broader reframe)._

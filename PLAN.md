@@ -2,7 +2,17 @@
 type: build-plan
 title: signa — interactive token-cascade agent (build plan, 2026-07-06)
 description: Build plan for the new interactive SigRank agent. Reads session logs locally (all 3 signal layers), computes the cascade + Steering Efficiency, builds a taste profile, and exposes diagnose/simulate/suggest/track/taste/goal/cost/anomaly/self-improve skills through an interactive REPL + watch daemon. LLM integration is stubbed now, architected to add later. Brainstorm package stays untouched.
-tags: [sigrank, agent, signa, build-plan, taste-learning, steering-efficiency, interactive, repl]
+tags:
+  [
+    sigrank,
+    agent,
+    signa,
+    build-plan,
+    taste-learning,
+    steering-efficiency,
+    interactive,
+    repl,
+  ]
 timestamp: 2026-07-06T04:00:00Z
 ---
 
@@ -70,11 +80,11 @@ A turn = one assistant message + the user response that follows it (until the ne
 
 ### The three outcomes per turn
 
-| Outcome | Log signature | SE weight |
-|---------|--------------|-----------|
-| **Accepted** | Assistant turn is followed by a new user message that is NOT a rejection and does NOT immediately re-edit the same file the assistant just edited | 1.0 |
-| **Corrected** | Assistant turn is followed by a user-initiated edit to the same file the assistant edited in this turn (within the next 2 turns) | 0.5 |
-| **Rejected** | A `tool_result` with `is_error: true` AND content matching the rejection pattern ("user doesn't want to proceed", "user rejected", etc.) | 0.0 |
+| Outcome       | Log signature                                                                                                                                     | SE weight |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **Accepted**  | Assistant turn is followed by a new user message that is NOT a rejection and does NOT immediately re-edit the same file the assistant just edited | 1.0       |
+| **Corrected** | Assistant turn is followed by a user-initiated edit to the same file the assistant edited in this turn (within the next 2 turns)                  | 0.5       |
+| **Rejected**  | A `tool_result` with `is_error: true` AND content matching the rejection pattern ("user doesn't want to proceed", "user rejected", etc.)          | 0.0       |
 
 ### SE formula
 
@@ -129,20 +139,20 @@ Layer 3 (content) extraction is best-effort: we read user feedback messages and 
 
 ## Skills (all built, full capacity)
 
-| Skill | Trigger | What it does |
-|-------|---------|-------------|
-| `diagnose` | "how am I doing", "diagnose", "audit" | Pillar-level audit: which pillar is weak, why, compare to class avg |
-| `simulate` | "simulate", "what if" | Project Υ/class/rank delta from a hypothetical pillar change |
-| `suggest` | "suggest", "recommend", "improve" | Ranked recommendations, each with simulated impact |
-| `track` | "track", "history", "trend" | Metrics over time from local history |
-| `taste` | "taste", "profile", "preferences" | Show/edit the taste profile |
-| `goal` | "goal", "target", "transmitter" | "To hit class X, you need Υ ≥ Y. Path: ..." |
-| `cost` | "cost", "spend", "dollars" | Token-to-cost analysis from Claude pricing |
-| `anomaly` | "anomaly", "drop", "weird" | Detect metric drops, pinpoint when it happened |
-| `selfimprove` | "self-improve", "coach", "next" | Full cycle: diagnose → suggest → simulate → actions |
-| `compare` | "compare", "vs", "versus" | Head-to-head vs another operator or class avg |
-| `watch` | "watch", "daemon", "monitor" | Start the background daemon |
-| `help` | "help", "?" | List skills + usage |
+| Skill         | Trigger                               | What it does                                                        |
+| ------------- | ------------------------------------- | ------------------------------------------------------------------- |
+| `diagnose`    | "how am I doing", "diagnose", "audit" | Pillar-level audit: which pillar is weak, why, compare to class avg |
+| `simulate`    | "simulate", "what if"                 | Project Υ/class/rank delta from a hypothetical pillar change        |
+| `suggest`     | "suggest", "recommend", "improve"     | Ranked recommendations, each with simulated impact                  |
+| `track`       | "track", "history", "trend"           | Metrics over time from local history                                |
+| `taste`       | "taste", "profile", "preferences"     | Show/edit the taste profile                                         |
+| `goal`        | "goal", "target", "transmitter"       | "To hit class X, you need Υ ≥ Y. Path: ..."                         |
+| `cost`        | "cost", "spend", "dollars"            | Token-to-cost analysis from Claude pricing                          |
+| `anomaly`     | "anomaly", "drop", "weird"            | Detect metric drops, pinpoint when it happened                      |
+| `selfimprove` | "self-improve", "coach", "next"       | Full cycle: diagnose → suggest → simulate → actions                 |
+| `compare`     | "compare", "vs", "versus"             | Head-to-head vs another operator or class avg                       |
+| `watch`       | "watch", "daemon", "monitor"          | Start the background daemon                                         |
+| `help`        | "help", "?"                           | List skills + usage                                                 |
 
 The REPL pattern-matches input to a skill, calls it, and prints the result. No LLM needed for v1 — the skills produce structured output. When the LLM is added later, it wraps the same skills (the LLM picks which skill to call and formats the output conversationally).
 
