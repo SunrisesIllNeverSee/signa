@@ -1,0 +1,50 @@
+name: Bug Report
+description: Report a bug in signa
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of signa is affected?
+      options:
+        - REPL / CLI
+        - MCP server
+        - Cascade computation
+        - Taste profile
+        - ASI (steering index)
+        - Log reader / adapters
+        - LLM mode
+        - Other / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `signa ...`
+        2. See ...
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Node 20, macOS 14"
+    validations:
+      required: true
