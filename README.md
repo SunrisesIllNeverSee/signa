@@ -1,4 +1,13 @@
-# signa
+# signa — token-cascade coach
+
+<div align="center">
+
+[![license](https://img.shields.io/badge/license-CC--BY--NC--4.0-blue.svg?style=flat-square)](./LICENSE)
+[![platform](https://img.shields.io/badge/platform-node-grey.svg?style=flat-square)](https://nodejs.org)
+[![live](https://img.shields.io/badge/site-signalaf.com-gold.svg?style=flat-square)](https://signalaf.com)
+[![MCP](https://img.shields.io/badge/MCP-12%20tools-purple.svg?style=flat-square)](https://modelcontextprotocol.io)
+
+</div>
 
 **Interactive token-cascade agent.** Reads your AI coding session logs locally, computes the yield cascade (Υ, SNR, Leverage, Velocity), builds a behavioral taste profile, measures your Appropriate Steering Index (ASI), and coaches you on token efficiency.
 
@@ -19,6 +28,26 @@ signa is one of three pieces:
 | **[signa](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `git clone` + `npm link` |
 
 **sigrank-mcp** is the calorie counter. **signa** is the metabolic panel.
+
+---
+
+## Table of Contents
+
+- [The SigRank ecosystem](#the-sigrank-ecosystem)
+- [What this is](#what-this-is)
+- [Install](#install)
+- [Quick start](#quick-start)
+- [The REPL](#the-repl)
+- [MCP server mode](#mcp-server-mode)
+- [Skills](#skills)
+- [Appropriate Steering Index (ASI)](#appropriate-steering-index-asi)
+- [The taste profile](#the-taste-profile)
+- [The taste → cascade bridge](#the-taste--cascade-bridge)
+- [Privacy](#privacy)
+- [File layout](#file-layout)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -281,6 +310,16 @@ This agent was built from the [SigRank brainstorm package](https://signalaf.com)
 
 ---
 
+## Contributing
+
+Contributions welcome. signa is built in the open.
+
+- Report bugs via [GitHub Issues](https://github.com/SunrisesIllNeverSee/signa/issues)
+- PRs: fork → branch → tests pass → open PR against `main`
+- See the [SigRank ecosystem](#the-sigrank-ecosystem) section for how this repo relates to the others
+
+---
+
 ## License
 
-CC-BY-NC-4.0
+CC-BY-NC-4.0 — see [`LICENSE`](./LICENSE).
