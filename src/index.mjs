@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * index.mjs — signa entry point.
+ * index.mjs — signaf entry point.
  *
  * Usage:
- *   signa                    → start interactive REPL
- *   signa scan               → one-shot scan (read logs, compute, save, print)
- *   signa diagnose           → one-shot diagnose
- *   signa simulate <args>    → one-shot simulate
- *   signa taste              → one-shot taste profile
- *   signa watch              → start watch daemon
- *   signa --help             → help
+ *   signaf                   → start interactive REPL
+ *   signaf scan              → one-shot scan (read logs, compute, save, print)
+ *   signaf diagnose          → one-shot diagnose
+ *   signaf simulate <args>   → one-shot simulate
+ *   signaf taste             → one-shot taste profile
+ *   signaf watch             → start watch daemon
+ *   signaf --help            → help
  *
  * Everything stays local. Nothing leaves your machine.
  */
@@ -222,40 +222,40 @@ async function main() {
     case "-h":
     case "help": {
       console.log(`
-signa — interactive token-cascade agent
+signaf — interactive token-cascade agent
 
 Usage:
-  signa                    Start interactive REPL
-  signa scan               Read logs, compute cascade + taste, save
-  signa diagnose           Pillar-level audit
-  signa simulate <args>    Project Υ delta (e.g. "cacheRead +50000")
-  signa suggest            Ranked recommendations
-  signa track              Metrics over time
-  signa taste              Show taste profile
-  signa asi                Show Appropriate Steering Index (8 dimensions)
-  signa bridge             Taste → cascade coaching insights
-  signa goal <class>       Path to target class (e.g. "transmitter")
-  signa cost               Token-to-cost analysis
-  signa anomaly            Detect metric drops
-  signa self-improve       Full cycle: diagnose → suggest → actions
-  signa compare <class>    Head-to-head vs class average
-  signa watch              Start background daemon
-  signa --mcp              Start MCP server (expose skills to your AI agent)
+  signaf                   Start interactive REPL
+  signaf scan              Read logs, compute cascade + taste, save
+  signaf diagnose          Pillar-level audit
+  signaf simulate <args>   Project Υ delta (e.g. "cacheRead +50000")
+  signaf suggest           Ranked recommendations
+  signaf track             Metrics over time
+  signaf taste             Show taste profile
+  signaf asi               Show Appropriate Steering Index (8 dimensions)
+  signaf bridge            Taste → cascade coaching insights
+  signaf goal <class>      Path to target class (e.g. "transmitter")
+  signaf cost              Token-to-cost analysis
+  signaf anomaly           Detect metric drops
+  signaf self-improve      Full cycle: diagnose → suggest → actions
+  signaf compare <class>   Head-to-head vs class average
+  signaf watch             Start background daemon
+  signaf --mcp             Start MCP server (expose skills to your AI agent)
 
 MCP server mode:
-  signa --mcp starts a stdio MCP server that exposes signa's skills as
+  signaf --mcp starts a stdio MCP server that exposes signaf's skills as
   MCP tools. Your AI agent (Claude Code, Cursor, Windsurf) can call them
-  through MCP. You bring your own LLM; signa provides the skills.
+  through MCP. You bring your own LLM; signaf provides the skills.
 
   In .mcp.json:
-    { "mcpServers": { "signa": { "command": "signa", "args": ["--mcp"] } } }
+    { "mcpServers": { "signaf": { "command": "signaf", "args": ["--mcp"] } } }
 
 Everything stays local. Nothing leaves your machine.
 `);
       break;
     }
     default:
-      console.log(`Unknown command: ${arg}. Run "signa help" for usage.`);
+      console.log(`Unknown command: ${arg}. Run "signaf help" for usage.`);
       process.exit(1);
   }
 }

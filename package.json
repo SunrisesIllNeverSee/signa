@@ -1,11 +1,14 @@
 {
-  "name": "signa",
+  "name": "@burnmydays/signaf",
   "version": "0.1.0",
-  "description": "signa — interactive token-cascade agent. Reads your session logs locally, computes the cascade + Steering Efficiency, builds a taste profile, and coaches you on token efficiency.",
+  "description": "signaf — interactive token-cascade agent. Reads your session logs locally, computes the cascade + Steering Efficiency, builds a taste profile, and coaches you on token efficiency.",
   "type": "module",
   "license": "CC-BY-NC-4.0",
   "bin": {
-    "signa": "src/index.mjs"
+    "signaf": "src/index.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "main": "src/index.mjs",
   "engines": {

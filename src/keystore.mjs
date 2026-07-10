@@ -31,9 +31,9 @@ function agentVersion() {
     const pkg = JSON.parse(
       readFileSync(new URL("../package.json", import.meta.url), "utf-8"),
     );
-    return `signa/${pkg.version}`;
+    return `signaf/${pkg.version}`;
   } catch {
-    return "signa";
+    return "signaf";
   }
 }
 

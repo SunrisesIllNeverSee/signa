@@ -15,7 +15,7 @@
  * In Claude Code's .mcp.json:
  *   {
  *     "mcpServers": {
- *       "signa": {
+ *       "signaf": {
  *         "command": "node",
  *         "args": ["/path/to/signa/src/mcp-server.mjs"]
  *       }
@@ -734,7 +734,7 @@ function pct(part, whole) {
 
 async function startServer() {
   const server = new Server(
-    { name: "signa", version: "0.1.0" },
+    { name: "signaf", version: "0.1.0" },
     { capabilities: { tools: {} } },
   );
 

@@ -1,4 +1,4 @@
-# signa — token-cascade coach
+# signaf — token-cascade coach
 
 <div align="center">
 
@@ -19,15 +19,15 @@ Everything stays local. Nothing leaves your machine.
 
 ## The SigRank ecosystem
 
-signa is one of three pieces:
+signaf is one of three pieces:
 
 | Repo                                                                  | What it is                                                                                                                              | Install                              |
 | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | **[sigrank-mcp](https://github.com/SunrisesIllNeverSee/sigrank-mcp)** | The instrument — extracts 4 token pillars, computes the cascade, submits to the leaderboard. MCP server + TUI dashboard.                | `npx sigrank`                        |
 | **[sigrank-app](https://github.com/SunrisesIllNeverSee/sigrank-app)** | The leaderboard — signalaf.com. Privacy-preserving operator profiles, class tiers, board rankings.                                      | [signalaf.com](https://signalaf.com) |
-| **[signa](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `git clone` + `npm link`             |
+| **[signaf](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `npx @burnmydays/signaf`             |
 
-**sigrank-mcp** is the calorie counter. **signa** is the metabolic panel.
+**sigrank-mcp** is the calorie counter. **signaf** is the metabolic panel.
 
 ---
 
@@ -53,7 +53,7 @@ signa is one of three pieces:
 
 ## What this is
 
-`signa` reads the same session logs that `sigrank-mcp`'s `tokenpull` reads — but instead of just extracting four token pillars, it reads **all three signal layers**:
+`signaf` reads the same session logs that `sigrank-mcp`'s `tokenpull` reads — but instead of just extracting four token pillars, it reads **all three signal layers**:
 
 - **Layer 1 (metadata):** tool distribution, file edit counts, edit sizes, reject/error rates
 - **Layer 2 (structural):** correction loops, convergence patterns, session shape
@@ -72,11 +72,10 @@ Then it coaches you: diagnose weak pillars, simulate changes, suggest improvemen
 ## Install
 
 ```bash
-git clone https://github.com/SunrisesIllNeverSee/signa.git
-cd signa
-npm install        # installs @modelcontextprotocol/sdk for MCP server mode
-npm link           # optional: makes `signa` available globally
-signa --help
+npx @burnmydays/signaf     # no install needed
+# or install globally:
+npm install -g @burnmydays/signaf
+signaf --help
 ```
 
 Requires Node.js ≥ 18.
@@ -87,24 +86,24 @@ Requires Node.js ≥ 18.
 
 ```bash
 # 1. Start the interactive REPL (auto-scans on first run)
-signa
+signaf
 
 # 2. Or run one-shot commands
-signa scan                 # Read logs, compute everything, save
-signa diagnose             # "How am I doing?"
-signa simulate input -50%  # "What if I cut my input in half?"
-signa suggest              # "What should I do differently?"
-signa taste                # "What's my taste profile?"
-signa asi                  # "How well do I steer?"
-signa bridge               # "Connect my behavior to my cascade"
-signa goal transmitter     # "How do I hit TRANSMITTER?"
-signa cost                 # "How much did I spend?"
-signa compare transmitter  # "How do I compare to TRANSMITTER avg?"
-signa self-improve         # Full cycle: diagnose → suggest → actions
-signa watch                # Background daemon (auto-scan on log changes)
+signaf scan                 # Read logs, compute everything, save
+signaf diagnose             # "How am I doing?"
+signaf simulate input -50%  # "What if I cut my input in half?"
+signaf suggest              # "What should I do differently?"
+signaf taste                # "What's my taste profile?"
+signaf asi                  # "How well do I steer?"
+signaf bridge               # "Connect my behavior to my cascade"
+signaf goal transmitter     # "How do I hit TRANSMITTER?"
+signaf cost                 # "How much did I spend?"
+signaf compare transmitter  # "How do I compare to TRANSMITTER avg?"
+signaf self-improve         # Full cycle: diagnose → suggest → actions
+signaf watch                # Background daemon (auto-scan on log changes)
 
-# 3. Or expose signa as MCP tools for your AI agent
-signa --mcp                # starts stdio MCP server (12 tools)
+# 3. Or expose signaf as MCP tools for your AI agent
+signaf --mcp                # starts stdio MCP server (12 tools)
 ```
 
 ---
@@ -114,7 +113,7 @@ signa --mcp                # starts stdio MCP server (12 tools)
 ```bash
 $ signa
 
-signa — interactive token-cascade agent. Type "help" for commands.
+signaf — interactive token-cascade agent. Type "help" for commands.
 
 signa> how am I doing today?
 ═══ DIAGNOSE ═══
@@ -150,20 +149,20 @@ export ANTHROPIC_API_KEY=sk-ant-...
 { "llm": "claude" }
 ```
 
-When enabled, signa sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing — zero API calls, zero data leaves.
+When enabled, signaf sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing — zero API calls, zero data leaves.
 
 ---
 
 ## MCP server mode
 
-`signa --mcp` starts a stdio MCP server that exposes 12 tools. Your AI agent (Claude Code, Cursor, Windsurf) can call them through MCP. You bring your own LLM; signa provides the skills.
+`signaf --mcp` starts a stdio MCP server that exposes 12 tools. Your AI agent (Claude Code, Cursor, Windsurf) can call them through MCP. You bring your own LLM; signaf provides the skills.
 
 ```json
 // In .mcp.json:
 {
   "mcpServers": {
-    "signa": {
-      "command": "signa",
+    "signaf": {
+      "command": "signaf",
       "args": ["--mcp"]
     }
   }
@@ -241,7 +240,7 @@ Saved at `~/.signa/taste-profile.json`. Generated from your last 30 days of logs
 4. **Cascade personality** — pillar distribution tendencies (cache-hoarder, input-minimizer, output-light, high-leverage)
 5. **Correction taxonomy** — what you correct (design vs logic vs config), categorized by file type
 
-**Layer 3 (content-based) is opt-in.** Use `signa taste --deep` or pass `{ deepTaste: true }` to the MCP tool. Raw content is not retained — only distilled preferences.
+**Layer 3 (content-based) is opt-in.** Use `signaf taste --deep` or pass `{ deepTaste: true }` to the MCP tool. Raw content is not retained — only distilled preferences.
 
 The profile is **operator-owned**: you can read it, edit it, share it, or delete it. It never leaves your machine by default.
 
@@ -265,7 +264,7 @@ Everything stays local. The agent reads all three signal layers from your logs, 
 
 **MCP server mode:** All computation happens locally. The MCP server only exposes computed results to your AI agent via stdio. No data is sent to any server.
 
-**LLM mode (optional):** When enabled, signa sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing.
+**LLM mode (optional):** When enabled, signaf sends only computed **metrics** (class, yield, pillars, ASI dimensions, taste dimensions) to Claude for conversational formatting. No session logs, no code, no message content. Default mode (stub) sends nothing.
 
 ---
 
@@ -314,7 +313,7 @@ This agent was built from the [SigRank brainstorm package](https://signalaf.com)
 
 ## Contributing
 
-Contributions welcome. signa is built in the open.
+Contributions welcome. signaf is built in the open.
 
 - Report bugs via [GitHub Issues](https://github.com/SunrisesIllNeverSee/signa/issues)
 - PRs: fork → branch → tests pass → open PR against `main`
