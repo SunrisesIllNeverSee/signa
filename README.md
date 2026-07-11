@@ -19,13 +19,15 @@ Everything stays local. Nothing leaves your machine.
 
 ## The SigRank ecosystem
 
-signaf is one of three pieces:
+signaf is one of five pieces:
 
 | Repo                                                                  | What it is                                                                                                                              | Install                              |
 | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | **[sigrank-mcp](https://github.com/SunrisesIllNeverSee/sigrank-mcp)** | The instrument — extracts 4 token pillars, computes the cascade, submits to the leaderboard. MCP server + TUI dashboard.                | `npx sigrank`                        |
 | **[sigrank-app](https://github.com/SunrisesIllNeverSee/sigrank-app)** | The leaderboard — signalaf.com. Privacy-preserving operator profiles, class tiers, board rankings.                                      | [signalaf.com](https://signalaf.com) |
 | **[signaf](https://github.com/SunrisesIllNeverSee/signa)** (this repo) | The coach — reads all 3 signal layers from your logs, builds a taste profile, measures ASI, coaches you on what your tokens were worth. | `npx @burnmydays/signaf`             |
+| **[sigrank-vscode](https://github.com/SunrisesIllNeverSee/sigrank-vscode)** | The IDE extension — see your cascade metrics inline in VS Code.                                                                   | `code --install-extension sigrank.sigrank` |
+| **[fundscore](https://github.com/SunrisesIllNeverSee/fundscore)** | The repo scorer — investor-readiness scoring for GitHub repos. CLI + MCP server.                                                              | `npx fundscore`                      |
 
 **sigrank-mcp** is the calorie counter. **signaf** is the metabolic panel.
 
