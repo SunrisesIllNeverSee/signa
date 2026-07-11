@@ -1,0 +1,20 @@
+# CODEOWNERS — auto-requests review on PRs touching critical paths.
+# If SunrisesIllNeverSee is an organization (not a user account), replace the
+# handle below with @SunrisesIllNeverSee/<team-slug>.
+
+# Signing + keystore — the highest-risk code in this repo. A single byte
+# divergence in sign.mjs hard-rejects every verified submission (422). The
+# canon-parity fixture + sign.test.mjs lock this byte-for-byte; any change
+# here needs review.
+/src/sign.mjs       @SunrisesIllNeverSee
+/src/keystore.mjs   @SunrisesIllNeverSee
+/src/attest.mjs     @SunrisesIllNeverSee
+
+# Submit pipeline — signs + posts to /api/v1/snapshots
+/src/submit.mjs     @SunrisesIllNeverSee
+
+# Cascade scoring — the Υ formula + Core 5 metrics
+/src/cascade.mjs    @SunrisesIllNeverSee
+
+# CI / security workflows + governance
+/.github/           @SunrisesIllNeverSee
