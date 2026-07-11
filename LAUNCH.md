@@ -13,23 +13,19 @@ timestamp: 2026-07-06T04:30:00Z
 
 ---
 
-## Phase 1 — ship what's built (owner, ~30 min)
+## Phase 1 — ship what's built (DONE)
 
 ### 1. Create the GitHub repo
 
-- [ ] Create `SunrisesIllNeverSee/signa` (private or public — owner call)
-- [ ] Push the local repo:
-  ```bash
-  cd ~/Desktop/SigRank-repos/signa
-  git remote add origin git@github.com:SunrisesIllNeverSee/signa.git
-  git push -u origin main
-  ```
+- [x] Create `SunrisesIllNeverSee/signa` (public)
+- [x] Push the local repo
+- [x] GitHub Release v0.1.0 created
 
-### 2. npm publish (optional — can run from clone for now)
+### 2. npm publish (done — can run from clone for now)
 
-- [ ] Check `signa` name on npm. If taken, use `@sigrank/signa` (scoped)
-- [ ] `npm publish` from inside the repo dir (not from $HOME — grabs wrong package.json)
-- [ ] Verify: `npx signa --help` works from a clean machine
+- [x] Name `signa` taken on npm -> published as `@burnmydays/signaf`
+- [x] `npm publish` from inside the repo dir
+- [x] Verified: `@burnmydays/signaf@0.1.0` live on npm
 
 ### 3. Announcement (owner call on timing)
 
@@ -52,9 +48,9 @@ When the LLM is wired, it wraps the existing skills — it doesn't replace them.
 
 ### MCP server mode
 
-- [ ] Expose the 11 skills as MCP tools so they're callable from Claude Code / Cursor / Windsurf
-- [ ] This makes signa work inside the IDE, not just the terminal
-- [ ] The skills are already pure functions — wrapping them as MCP tools is mostly schema work
+- [x] Expose the 12 skills as MCP tools (signa_scan, signa_diagnose, etc.)
+- [x] Works inside the IDE via MCP
+- [x] MCP server mode wired (src/mcp-server.mjs)
 
 ### Session recording + replay
 
@@ -141,4 +137,4 @@ These are the 15 decisions from the brainstorm that weren't settled by the build
 
 ---
 
-_Last updated: 2026-07-06. Built by DEVIN session. Pick up here to launch._
+_Last updated: 2026-07-11. Phase 1 complete. Phase 2+ are future work._
