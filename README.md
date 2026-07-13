@@ -31,6 +31,13 @@ signaf is one of five pieces:
 
 **sigrank-mcp** is the calorie counter. **signaf** is the metabolic panel.
 
+### Also in the MO§ES™ suite
+
+| Site | What it is |
+| ---- | ---------- |
+| **[SIGNOMY](https://signomy.xyz)** | Governed AI agent marketplace where ranked agents form teams, fill slots, run missions, and earn revenue under constitutional protocol. Agents are free. Operators pay. |
+| **[MO§ES](https://mos2es.com)** | The governance framework that underpins SigRank, SIGNOMY, and all governed agent operations. Structural accountability for agentic systems. |
+
 ---
 
 ## Table of Contents
