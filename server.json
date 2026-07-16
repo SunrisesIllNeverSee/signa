@@ -1,0 +1,99 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/reference/server-json/generic-server-json.schema.json",
+  "name": "io.github.SunrisesIllNeverSee/signa",
+  "description": "Interactive token-cascade agent. Reads AI coding session logs locally, computes the cascade + Steering Efficiency, builds a taste profile, and coaches you on token efficiency. 12 MCP tools. All local, no auth.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/SunrisesIllNeverSee/signa",
+  "license": "CC-BY-NC-4.0",
+  "author": {
+    "name": "Deric McHenry",
+    "url": "https://signalaf.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SunrisesIllNeverSee/signa.git"
+  },
+  "registryType": "npm",
+  "package": {
+    "name": "@burnmydays/signaf",
+    "registry": "https://registry.npmjs.org"
+  },
+  "runtime": "node",
+  "transport": "stdio",
+  "tools": [
+    {
+      "name": "signa_scan",
+      "description": "Read session logs locally, compute full cascade (Yield, SNR, Leverage, Velocity, class), SE, ASI, and taste profile.",
+      "title": "Scan session logs",
+      "annotations": { "readOnlyHint": true, "openWorldHint": true }
+    },
+    {
+      "name": "signa_diagnose",
+      "description": "Diagnose your token cascade. Shows class, pillar breakdown, and flags issues.",
+      "title": "Diagnose cascade",
+      "annotations": { "readOnlyHint": true, "openWorldHint": true }
+    },
+    {
+      "name": "signa_simulate",
+      "description": "Simulate a pillar change and project the resulting Yield and class. Shows delta from current state.",
+      "title": "Simulate change",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_suggest",
+      "description": "Get ranked recommendations for improving your cascade. Each suggestion shows action, projected yield delta, and effort level.",
+      "title": "Get suggestions",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_taste",
+      "description": "Show your behavioral taste profile — 5 dimensions: steering signature, iteration fingerprint, workflow rhythm, cascade personality, correction taxonomy.",
+      "title": "Show taste profile",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_asi",
+      "description": "Show your Appropriate Steering Index (ASI v2) — 8 dimensions measuring whether your interventions were the RIGHT ones.",
+      "title": "Show ASI",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_bridge",
+      "description": "The taste to cascade bridge: coaching insights connecting your behavioral taste profile to your cascade performance.",
+      "title": "Taste-cascade bridge",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_cost",
+      "description": "Show your token-to-cost analysis. Computes total cost based on Claude pricing. Shows cost breakdown and cache savings.",
+      "title": "Show cost analysis",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_goal",
+      "description": "Show the path to a target class. Computes what pillar changes are needed to reach the target class from your current state.",
+      "title": "Goal path",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_compare",
+      "description": "Compare your cascade against a class average or a specific operator. Shows where you stand relative to the benchmark.",
+      "title": "Compare cascade",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_track",
+      "description": "Show your cascade metrics over time from local history. Displays trend lines for Yield, SNR, Leverage, Velocity, and class changes.",
+      "title": "Track over time",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "signa_anomaly",
+      "description": "Detect metric drops and anomalies in your cascade history. Pinpoints when a metric dropped and by how much.",
+      "title": "Detect anomalies",
+      "annotations": { "readOnlyHint": true, "idempotentHint": true }
+    }
+  ],
+  "keywords": ["sigrank", "signa", "cascade", "taste", "steering-efficiency", "token-efficiency", "mcp", "model-context-protocol", "ai-agent"],
+  "categories": ["developer-tools", "ai-productivity"]
+}

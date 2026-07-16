@@ -2,6 +2,7 @@
   "name": "@burnmydays/signaf",
   "version": "0.1.0",
   "description": "signaf — interactive token-cascade agent. Reads your session logs locally, computes the cascade + Steering Efficiency, builds a taste profile, and coaches you on token efficiency.",
+  "mcpName": "io.github.SunrisesIllNeverSee/signa",
   "type": "module",
   "license": "CC-BY-NC-4.0",
   "bin": {
