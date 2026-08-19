@@ -1,3 +1,11 @@
+---
+type: Reference
+title: signa — User Guide
+description: signa — User Guide — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # signa — User Guide
 
 > signa is the interactive agent that reads your AI coding session logs,
