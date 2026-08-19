@@ -1,3 +1,11 @@
+---
+type: Reference
+title: signa — Positioning (Internal)
+description: signa — Positioning (Internal) — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # signa — Positioning (Internal)
 
 > Internal document. Defines what signa is, what it's NOT, and where its lane

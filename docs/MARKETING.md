@@ -1,3 +1,11 @@
+---
+type: Reference
+title: signa — Marketing Copy
+description: signa — Marketing Copy — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # signa — Marketing Copy
 
 > Internal document. The positioning, hooks, and copy for marketing signa.

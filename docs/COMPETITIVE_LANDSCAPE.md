@@ -1,3 +1,11 @@
+---
+type: Reference
+title: signa — Competitive Landscape (Internal)
+description: signa — Competitive Landscape (Internal) — documentation in docs/.
+tags: [documentation, docs]
+timestamp: 2026-08-19
+---
+
 # signa — Competitive Landscape (Internal)
 
 > Internal document. The full landscape scan, what each tool does, and where
