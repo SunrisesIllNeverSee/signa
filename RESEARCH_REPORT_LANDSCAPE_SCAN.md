@@ -159,7 +159,7 @@ the best. These are opposite games:
 - StraVIBE: more tokens = higher rank. The game is consumption.
 - SigRank: better ratio = higher rank. The game is efficiency.
 
-**StraVIBE is a calorie counter. SigRank is a metabolic panel.** They look
+**StraVIBE is a calorie counter. Upsilon is a metabolic panel.** They look
 similar from the outside (token leaderboard, privacy model, npm install) but
 they measure fundamentally different things. StraVIBE says "you burned 48.2M
 tokens." SigRank says "your cache leverage is 259× and your velocity is 1.09 —

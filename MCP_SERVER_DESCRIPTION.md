@@ -2,7 +2,7 @@
 
 > Interactive token-cascade agent — reads your AI coding session logs locally, computes the cascade + Steering Efficiency, builds a taste profile, and coaches you on token efficiency. 12 MCP tools.
 
-Signa is a local-first agent that reads your Claude Code / Cursor session logs, computes the full SigRank token cascade (Υ Yield, SNR, Leverage, Velocity, class), measures Steering Efficiency (SE) and Appropriate Steering Index (ASI), extracts a behavioral taste profile, and provides coaching insights connecting your behavior to your cascade performance. It exposes 12 MCP tools so your AI agent can call them through MCP. You bring your own LLM; signa provides the skills.
+Signa is a local-first agent that reads your Claude Code / Cursor session logs, computes the full Upsilon token cascade (Υ Yield, SNR, Leverage, Velocity, class), measures Steering Efficiency (SE) and Appropriate Steering Index (ASI), extracts a behavioral taste profile, and provides coaching insights connecting your behavior to your cascade performance. It exposes 12 MCP tools so your AI agent can call them through MCP. You bring your own LLM; signa provides the skills.
 
 ## Install
 
