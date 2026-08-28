@@ -29,7 +29,7 @@ leaderboard, npm install, privacy model) but the farthest in substance.
 StraVIBE ranks on volume. SigRank ranks on efficiency. Same privacy model,
 opposite game.
 
-**StraVIBE is a calorie counter. SigRank is a metabolic panel.**
+**StraVIBE is a calorie counter. Upsilon is a metabolic panel.**
 
 ### Tier 2: Behavioral/style analysis (pattern finders)
 
@@ -137,4 +137,4 @@ signa does (ASI, taste profiling, taste→cascade bridge, coaching) is built on
 top of the cascade. The formula is the intellectual property; the four
 integers are the input; the cascade is the output.
 
-**signa is the interface to data that only SigRank has.**
+**signa is the interface to data that only Upsilon has.**

@@ -26,7 +26,7 @@ prompt coach. Not a session replay tool.
 The cascade is the architecture of your token flow — not how much you burned,
 but how well you compounded. Υ Yield, SNR, Leverage, Velocity. The class system
 (BASE → TRANSMITTER). Nobody else computes these. signa is the interface to
-data that only SigRank has.
+data that only Upsilon has.
 
 ## The three-tier analogy
 

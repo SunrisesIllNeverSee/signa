@@ -37,7 +37,7 @@ signaf is one of five pieces:
 | Site | What it is |
 | ---- | ---------- |
 | **[SIGNOMY](https://signomy.xyz)** | Governed AI agent marketplace where ranked agents form teams, fill slots, run missions, and earn revenue under constitutional protocol. Agents are free. Operators pay. |
-| **[MO§ES](https://mos2es.com)** | The governance framework that underpins SigRank, SIGNOMY, and all governed agent operations. Structural accountability for agentic systems. |
+| **[MO§ES](https://mos2es.com)** | The governance framework that underpins Upsilon, SIGNOMY, and all governed agent operations. Structural accountability for agentic systems. |
 
 ---
 
@@ -258,7 +258,7 @@ The profile is **operator-owned**: you can read it, edit it, share it, or delete
 
 ## The taste → cascade bridge
 
-The bridge connects your behavioral taste profile to your cascade performance, generating coaching insights unique to SigRank. No other tool can do this — it requires both the taste profile AND the cascade formula.
+The bridge connects your behavioral taste profile to your cascade performance, generating coaching insights unique to Upsilon. No other tool can do this — it requires both the taste profile AND the cascade formula.
 
 Example insights:
 
