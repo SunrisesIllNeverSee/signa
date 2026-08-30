@@ -11,3 +11,4 @@ dist/
 .coord/micro/state/snapshots/
 .coord/micro/scratchpad-archive/
 .repo/.cache/
+__pycache__/
