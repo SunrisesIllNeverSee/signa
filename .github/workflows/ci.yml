@@ -18,6 +18,7 @@ jobs:
   secret-scan:
     name: Secret scan (gitleaks)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       # gitleaks-action needs pull-requests: write to post review comments on
@@ -27,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # Full history so gitleaks can scan past commits, not just the diff.
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v3
@@ -37,6 +39,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         node-version: [18, 20, 22]
@@ -44,6 +47,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: node src/index.mjs --help
