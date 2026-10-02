@@ -18,18 +18,26 @@ const window = {
   end: "2026-10-02T00:00:00.000Z",
 };
 
-test("high cache reuse is not a plausibility failure", () => {
+test("low fresh-input share is not a plausibility flag", () => {
   const issues = plausibilityCheck(telemetry, window);
-  const staleCompositionCodes = new Set([
-    "cache_without_creation",
-    "extreme_cache_ratio",
-    "low_cache_write_ratio",
-    "implausible_input_share",
-    "implausible_cadence",
-  ]);
   assert.equal(
-    issues.some((entry) => staleCompositionCodes.has(entry.code)),
+    issues.some((entry) => entry.code === "implausible_input_share"),
     false,
+  );
+});
+
+test("other production integrity signals remain active", () => {
+  const issues = plausibilityCheck(
+    {
+      ...telemetry,
+      tokens_total: 1_040_100,
+      tokens_cache_read: 1_010_000,
+    },
+    window,
+  );
+  assert.equal(
+    issues.some((entry) => entry.code === "extreme_cache_ratio"),
+    true,
   );
 });
 
