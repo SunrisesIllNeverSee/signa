@@ -18,17 +18,29 @@ const window = {
   end: "2026-10-02T00:00:00.000Z",
 };
 
-test("input-share floor applies to single-platform telemetry", () => {
-  const issues = plausibilityCheck(telemetry, window, "claude");
-  const issue = issues.find((entry) => entry.code === "implausible_input_share");
-  assert.ok(issue);
-  assert.match(issue.detail, /0\.03%/);
+test("high cache reuse is not a plausibility failure", () => {
+  const issues = plausibilityCheck(telemetry, window);
+  const staleCompositionCodes = new Set([
+    "cache_without_creation",
+    "extreme_cache_ratio",
+    "low_cache_write_ratio",
+    "implausible_input_share",
+    "implausible_cadence",
+  ]);
+  assert.equal(
+    issues.some((entry) => staleCompositionCodes.has(entry.code)),
+    false,
+  );
 });
 
-test("multi-platform aggregates are exempt from input-share floor", () => {
-  const issues = plausibilityCheck(telemetry, window, "multi");
+test("server-parity totals tolerance remains 0.5 percent", () => {
+  const justOutsideTolerance = {
+    ...telemetry,
+    tokens_total: Math.round(telemetry.tokens_total * 1.006),
+  };
+  const issues = plausibilityCheck(justOutsideTolerance, window);
   assert.equal(
-    issues.some((entry) => entry.code === "implausible_input_share"),
-    false,
+    issues.some((entry) => entry.code === "totals_inconsistent"),
+    true,
   );
 });
