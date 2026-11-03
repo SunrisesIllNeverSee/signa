@@ -11,3 +11,9 @@ glama.json
 test/
 docs/
 .ello/
+AGENTS.md
+.repo/
+system-devin/
+.devin/
+.coord/
+.pre-commit-config.yaml
