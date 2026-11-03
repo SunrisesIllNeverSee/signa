@@ -12,3 +12,10 @@ __pycache__/
 # Skylos scan output
 skylos-sec.json
 .skylos/
+
+# Agent/governance files stay local (products carry industry-standard files only)
+AGENTS.md
+.repo/
+system-devin/
+.pre-commit-config.yaml
+.devin/
