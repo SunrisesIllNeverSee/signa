@@ -17,3 +17,5 @@ skylos-sec.json
 AGENTS.md
 .repo/
 system-devin/
+.pre-commit-config.yaml
+.devin/
