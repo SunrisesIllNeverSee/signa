@@ -19,3 +19,21 @@ AGENTS.md
 system-devin/
 .pre-commit-config.yaml
 .devin/
+
+# Local operating state is excluded from public source.
+/.coord/
+/.repo/
+/.ello/
+/.devin/
+/.agents/
+/.claude/
+/system-devin/
+/Devins_Plans/
+/AGENTS.md
+/CLAUDE.md
+/REPO.yaml
+/skills-lock.json
+/release-staging/
+/_workspace/
+/docs/superpowers/
+/standard/strategy/
